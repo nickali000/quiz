@@ -1,0 +1,19 @@
+{
+  "name": "quiz-random-server",
+  "version": "1.0.0",
+  "description": "Server quiz con domanda casuale e verifica risposta",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "quiz",
+    "docker",
+    "express"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

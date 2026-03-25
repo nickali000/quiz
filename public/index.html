@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Casuale</title>
+    <style>
+      :root {
+        --bg: #f7f4eb;
+        --card: #fffaf0;
+        --text: #2d2a24;
+        --accent: #b5441a;
+        --accent-dark: #8a3212;
+        --border: #dccdb2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top, #fff5db 0%, var(--bg) 60%);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .card {
+        width: min(860px, 100%);
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.25rem;
+        box-shadow: 0 12px 24px rgba(88, 58, 0, 0.15);
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.3rem;
+      }
+
+      button {
+        border: none;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background: var(--accent-dark);
+      }
+
+      button.secondary {
+        background: #e5d8c0;
+        color: #352c1f;
+      }
+
+      button.secondary:hover {
+        background: #d4c4a8;
+      }
+
+      #questionText {
+        font-size: 1.05rem;
+        line-height: 1.4;
+      }
+
+      #questionImage {
+        width: 100%;
+        max-height: 340px;
+        object-fit: contain;
+        margin: 0.8rem 0;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      #answers {
+        display: grid;
+        gap: 0.6rem;
+        margin: 1rem 0;
+      }
+
+      .answer {
+        display: flex;
+        gap: 0.5rem;
+        align-items: flex-start;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.55rem 0.7rem;
+        background: #fffef9;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+
+      #result {
+        margin-top: 0.8rem;
+        font-weight: bold;
+      }
+
+      .muted {
+        font-size: 0.9rem;
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="header">
+        <h1>Quiz Casuale</h1>
+        <button id="newQuestionBtn" type="button">Nuova domanda</button>
+      </div>
+      <p id="meta" class="muted"></p>
+      <p id="answerStatus" class="muted"></p>
+      <p id="questionText">Caricamento...</p>
+      <img id="questionImage" alt="Immagine domanda" hidden />
+      <div id="answers"></div>
+      <div class="actions">
+        <button id="checkBtn" type="button">Check risposta</button>
+        <button id="setCorrectBtn" class="secondary" type="button">Imposta risposta corretta</button>
+      </div>
+      <p id="result"></p>
+      <p class="muted">
+        Se una domanda non ha risposta corretta, seleziona un'opzione e premi "Imposta risposta corretta".
+      </p>
+    </main>
+
+    <script>
+      const metaEl = document.getElementById("meta");
+      const answerStatusEl = document.getElementById("answerStatus");
+      const questionTextEl = document.getElementById("questionText");
+      const questionImageEl = document.getElementById("questionImage");
+      const answersEl = document.getElementById("answers");
+      const resultEl = document.getElementById("result");
+      const newQuestionBtn = document.getElementById("newQuestionBtn");
+      const checkBtn = document.getElementById("checkBtn");
+      const setCorrectBtn = document.getElementById("setCorrectBtn");
+
+      let currentQuestion = null;
+
+      function updateAnswerStatus() {
+        if (!currentQuestion) {
+          answerStatusEl.textContent = "";
+          return;
+        }
+
+        if (currentQuestion.has_correct_answer) {
+          answerStatusEl.textContent = "Risposta corretta presente: puoi verificare o modificarla.";
+          setCorrectBtn.textContent = "Modifica risposta corretta";
+        } else {
+          answerStatusEl.textContent = "Nessuna risposta corretta impostata.";
+          setCorrectBtn.textContent = "Imposta risposta corretta";
+        }
+      }
+
+      function getSelectedAnswerIndex() {
+        const selected = document.querySelector('input[name="answer"]:checked');
+        if (!selected) {
+          return null;
+        }
+        return Number(selected.value);
+      }
+
+      function renderQuestion(question) {
+        currentQuestion = question;
+        resultEl.textContent = "";
+        metaEl.textContent = `Pagina ${question.pagina} - Domanda ${question.numero}`;
+        questionTextEl.textContent = question.testo;
+
+        if (question.immagine_url) {
+          questionImageEl.src = question.immagine_url;
+          questionImageEl.hidden = false;
+        } else {
+          questionImageEl.src = "";
+          questionImageEl.hidden = true;
+        }
+
+        answersEl.innerHTML = "";
+        question.risposte.forEach((answer, index) => {
+          const wrapper = document.createElement("label");
+          wrapper.className = "answer";
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "answer";
+          input.value = String(index);
+
+          const text = document.createElement("span");
+          text.textContent = answer;
+
+          wrapper.appendChild(input);
+          wrapper.appendChild(text);
+          answersEl.appendChild(wrapper);
+        });
+
+        updateAnswerStatus();
+      }
+
+      async function fetchRandomQuestion() {
+        const response = await fetch("/api/question/random");
+        if (!response.ok) {
+          throw new Error("Impossibile caricare una domanda casuale.");
+        }
+        const question = await response.json();
+        renderQuestion(question);
+      }
+
+      async function checkAnswer() {
+        if (!currentQuestion) {
+          return;
+        }
+
+        const selectedIndex = getSelectedAnswerIndex();
+        if (selectedIndex === null) {
+          resultEl.textContent = "Seleziona prima una risposta.";
+          return;
+        }
+
+        const payload = {
+          questionId: currentQuestion.id,
+          answerIndex: selectedIndex
+        };
+
+        const response = await fetch("/api/question/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          resultEl.textContent = data.error || "Errore durante il check.";
+          return;
+        }
+
+        if (!data.isValidChoice) {
+          resultEl.textContent = "Risposta non valida per questa domanda.";
+          return;
+        }
+
+        if (!data.hasCorrectAnswer) {
+          currentQuestion.has_correct_answer = false;
+          updateAnswerStatus();
+          resultEl.textContent =
+            "Nessuna risposta corretta impostata. Usa il tasto 'Imposta risposta corretta'.";
+          return;
+        }
+
+        currentQuestion.has_correct_answer = true;
+        updateAnswerStatus();
+        resultEl.textContent = data.isCorrect
+          ? "Risposta corretta."
+          : `Risposta errata. Corretta: ${data.correctAnswer}`;
+      }
+
+      async function setCorrectAnswer() {
+        if (!currentQuestion) {
+          return;
+        }
+
+        const selectedIndex = getSelectedAnswerIndex();
+        if (selectedIndex === null) {
+          resultEl.textContent = "Seleziona prima una risposta da impostare.";
+          return;
+        }
+
+        const response = await fetch("/api/question/set-correct", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            questionId: currentQuestion.id,
+            answerIndex: selectedIndex
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          resultEl.textContent = data.error || "Errore durante il salvataggio.";
+          return;
+        }
+
+        currentQuestion.has_correct_answer = true;
+        updateAnswerStatus();
+        resultEl.textContent = `${data.message} (${data.correctAnswer})`;
+      }
+
+      newQuestionBtn.addEventListener("click", () => {
+        fetchRandomQuestion().catch((error) => {
+          resultEl.textContent = error.message;
+        });
+      });
+
+      checkBtn.addEventListener("click", () => {
+        checkAnswer().catch((error) => {
+          resultEl.textContent = error.message;
+        });
+      });
+
+      setCorrectBtn.addEventListener("click", () => {
+        setCorrectAnswer().catch((error) => {
+          resultEl.textContent = error.message;
+        });
+      });
+
+      fetchRandomQuestion().catch((error) => {
+        resultEl.textContent = error.message;
+      });
+    </script>
+  </body>
+</html>
