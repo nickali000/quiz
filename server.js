@@ -6,6 +6,7 @@ const app = express();
 const PORT = Number(process.env.PORT) || 1111;
 
 const QUIZ_FILE = path.join(__dirname, "quiz_estratti.json");
+
 const IMAGES_DIR = path.join(__dirname, "immagini_quiz");
 
 app.use(express.json());
