@@ -112,6 +112,24 @@ function readSelectedIndex(question, answerIndex, answerText) {
   return { selectedIndex, isValidChoice };
 }
 
+app.get("/api/chapters", (_req, res) => {
+  const chapters = [...new Set(store.questions.map((q) => q.pagina))].sort((a, b) => a - b);
+  res.json(chapters);
+});
+
+app.post("/api/questions", (req, res) => {
+  const { chapters } = req.body || {};
+  if (!Array.isArray(chapters) || chapters.length === 0) {
+    return res.status(400).json({ error: "Seleziona almeno un capitolo." });
+  }
+
+  const selectedQuestions = store.questions
+    .filter((q) => chapters.includes(q.pagina))
+    .map((q) => toPublicQuestion(q));
+
+  res.json(selectedQuestions);
+});
+
 app.get("/api/question/random", (_req, res) => {
   const randomIndex = Math.floor(Math.random() * store.questions.length);
   const randomQuestion = store.questions[randomIndex];

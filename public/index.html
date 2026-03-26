@@ -3,15 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quiz Casuale</title>
+    <title>Antigravity Quiz Avanzato</title>
     <style>
       :root {
-        --bg: #f7f4eb;
-        --card: #fffaf0;
-        --text: #2d2a24;
-        --accent: #b5441a;
-        --accent-dark: #8a3212;
-        --border: #dccdb2;
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --accent: #3b82f6;
+        --accent-hover: #2563eb;
+        --success: #10b981;
+        --error: #ef4444;
+        --border: #334155;
+        --glass: rgba(30, 41, 59, 0.7);
       }
 
       * {
@@ -20,310 +24,574 @@
 
       body {
         margin: 0;
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        background: radial-gradient(circle at top, #fff5db 0%, var(--bg) 60%);
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: radial-gradient(circle at top right, #1e293b, #0f172a);
         color: var(--text);
         min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 1rem;
+        padding: 1.5rem;
       }
 
-      .card {
-        width: min(860px, 100%);
-        background: var(--card);
+      .container {
+        width: min(800px, 100%);
+        background: var(--glass);
+        backdrop-filter: blur(12px);
         border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 1.25rem;
-        box-shadow: 0 12px 24px rgba(88, 58, 0, 0.15);
-      }
-
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
       }
 
       h1 {
-        margin: 0;
-        font-size: 1.3rem;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, #60a5fa, #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
       }
 
-      button {
-        border: none;
-        border-radius: 10px;
-        padding: 0.6rem 1rem;
-        background: var(--accent);
-        color: #fff;
-        cursor: pointer;
-        font-weight: bold;
+      /* Setup Screen Styles */
+      .setup-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
       }
 
-      button:hover {
-        background: var(--accent-dark);
-      }
-
-      button.secondary {
-        background: #e5d8c0;
-        color: #352c1f;
-      }
-
-      button.secondary:hover {
-        background: #d4c4a8;
-      }
-
-      #questionText {
-        font-size: 1.05rem;
-        line-height: 1.4;
-      }
-
-      #questionImage {
-        width: 100%;
-        max-height: 340px;
-        object-fit: contain;
-        margin: 0.8rem 0;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        background: #fff;
-      }
-
-      #answers {
+      .chapter-grid {
         display: grid;
-        gap: 0.6rem;
-        margin: 1rem 0;
-      }
-
-      .answer {
-        display: flex;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
         gap: 0.5rem;
-        align-items: flex-start;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 1rem;
+        background: rgba(15, 23, 42, 0.5);
+        border-radius: 12px;
         border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 0.55rem 0.7rem;
-        background: #fffef9;
       }
 
-      .actions {
+      .chapter-item {
         display: flex;
-        gap: 0.6rem;
-        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 6px;
+        transition: background 0.2s;
       }
 
-      #result {
-        margin-top: 0.8rem;
-        font-weight: bold;
+      .chapter-item:hover {
+        background: rgba(59, 130, 246, 0.1);
       }
 
-      .muted {
-        font-size: 0.9rem;
-        opacity: 0.85;
+      .mode-selection {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
       }
+
+      .btn {
+        border: none;
+        border-radius: 12px;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background: var(--border);
+        color: var(--text);
+      }
+
+      /* Quiz Screen Styles */
+      .quiz-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .progress-container {
+        flex-grow: 1;
+        margin-right: 1.5rem;
+      }
+
+      .progress-label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, #3b82f6, #8b5cf6);
+        transition: width 0.3s ease;
+      }
+
+      .question-card {
+        margin-bottom: 2rem;
+      }
+
+      .meta {
+        font-size: 0.8rem;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+      }
+
+      .question-text {
+        font-size: 1.2rem;
+        line-height: 1.5;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+      }
+
+      .question-image {
+        width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        background: white;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem;
+      }
+
+      .answers-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .answer-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(30, 41, 59, 0.5);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .answer-option:hover {
+        border-color: var(--accent);
+        background: rgba(59, 130, 246, 0.05);
+      }
+
+      .answer-option.selected {
+        border-color: var(--accent);
+        background: rgba(59, 130, 246, 0.15);
+        box-shadow: 0 0 0 1px var(--accent);
+      }
+
+      .answer-option.correct {
+        border-color: var(--success);
+        background: rgba(16, 185, 129, 0.15);
+      }
+
+      .answer-option.error {
+        border-color: var(--error);
+        background: rgba(239, 68, 68, 0.15);
+      }
+
+      .answer-radio {
+        display: none;
+      }
+
+      .answer-letter {
+        width: 28px;
+        height: 28px;
+        background: var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      .selected .answer-letter {
+        background: var(--accent);
+      }
+
+      .nav-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      #result-msg {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 12px;
+        font-weight: 500;
+        text-align: center;
+        display: none;
+      }
+
+      .msg-success { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
+      .msg-error { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error); }
+
+      /* Transitions */
+      .fade-in { animation: fadeIn 0.4s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+      [hidden] { display: none !important; }
     </style>
   </head>
   <body>
-    <main class="card">
-      <div class="header">
-        <h1>Quiz Casuale</h1>
-        <button id="newQuestionBtn" type="button">Nuova domanda</button>
+    <div class="container fade-in">
+      <header>
+        <h1>Antigravity Quiz</h1>
+      </header>
+
+      <!-- SETUP SCREEN -->
+      <div id="setup-screen">
+        <div class="setup-section">
+          <h3>Seleziona Capitoli (Pagine)</h3>
+          <div id="chapter-list" class="chapter-grid">
+            <p class="text-muted">Caricamento capitoli...</p>
+          </div>
+
+          <div class="selection-tools">
+            <button class="btn btn-secondary" onclick="selectAllChapters(true)">Seleziona Tutti</button>
+            <button class="btn btn-secondary" onclick="selectAllChapters(false)">Deseleziona Tutti</button>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;">
+
+          <h3>Modalità di Navigazione</h3>
+          <div class="mode-selection">
+            <label class="chapter-item">
+              <input type="radio" name="navigation-mode" value="sequential" checked> Sequenziale
+            </label>
+            <label class="chapter-item">
+              <input type="radio" name="navigation-mode" value="random"> Casuale (Mischia)
+            </label>
+          </div>
+
+          <button id="start-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+            Inizia Quiz
+          </button>
+        </div>
       </div>
-      <p id="meta" class="muted"></p>
-      <p id="answerStatus" class="muted"></p>
-      <p id="questionText">Caricamento...</p>
-      <img id="questionImage" alt="Immagine domanda" hidden />
-      <div id="answers"></div>
-      <div class="actions">
-        <button id="checkBtn" type="button">Check risposta</button>
-        <button id="setCorrectBtn" class="secondary" type="button">Imposta risposta corretta</button>
+
+      <!-- QUIZ SCREEN -->
+      <div id="quiz-screen" hidden>
+        <div class="quiz-header">
+          <div class="progress-container">
+            <span id="progress-text" class="progress-label">Domanda 0 di 0</span>
+            <div class="progress-bar">
+              <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" onclick="resetToSetup()">Menu</button>
+        </div>
+
+        <div id="question-container" class="question-card">
+          <div class="meta" id="q-meta">Pagina 0 - Domanda 0</div>
+          <div class="question-text" id="q-text">Testo della domanda...</div>
+          <img id="q-image" class="question-image" src="" alt="Allegato" hidden>
+
+          <div class="answers-grid" id="q-answers">
+            <!-- Answers go here -->
+          </div>
+        </div>
+
+        <div id="result-msg"></div>
+
+        <div class="nav-actions">
+          <button id="prev-btn" class="btn btn-secondary">
+            &larr; Indietro
+          </button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="check-btn" class="btn btn-primary">Verifica</button>
+            <button id="next-btn" class="btn btn-primary">
+              Avanti &rarr;
+            </button>
+          </div>
+        </div>
       </div>
-      <p id="result"></p>
-      <p class="muted">
-        Se una domanda non ha risposta corretta, seleziona un'opzione e premi "Imposta risposta corretta".
-      </p>
-    </main>
+    </div>
 
     <script>
-      const metaEl = document.getElementById("meta");
-      const answerStatusEl = document.getElementById("answerStatus");
-      const questionTextEl = document.getElementById("questionText");
-      const questionImageEl = document.getElementById("questionImage");
-      const answersEl = document.getElementById("answers");
-      const resultEl = document.getElementById("result");
-      const newQuestionBtn = document.getElementById("newQuestionBtn");
-      const checkBtn = document.getElementById("checkBtn");
-      const setCorrectBtn = document.getElementById("setCorrectBtn");
+      // STATE
+      let allCapitoli = [];
+      let quizQuestions = [];
+      let currentIdx = 0;
+      let userChoices = {}; // { questionId: originalIndex }
+      let shuffledStates = {}; // { questionId: [mapping_array] }
+      let resultsCache = {}; // { questionId: resultObj }
 
-      let currentQuestion = null;
+      // UI ELEMENTS
+      const setupScreen = document.getElementById('setup-screen');
+      const quizScreen = document.getElementById('quiz-screen');
+      const chapterList = document.getElementById('chapter-list');
+      const startBtn = document.getElementById('start-btn');
+      const qText = document.getElementById('q-text');
+      const qMeta = document.getElementById('q-meta');
+      const qImage = document.getElementById('q-image');
+      const qAnswers = document.getElementById('q-answers');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const checkBtn = document.getElementById('check-btn');
+      const progressText = document.getElementById('progress-text');
+      const progressFill = document.getElementById('progress-fill');
+      const resultMsg = document.getElementById('result-msg');
 
-      function updateAnswerStatus() {
-        if (!currentQuestion) {
-          answerStatusEl.textContent = "";
+      // 1. INITIALIZATION
+      async function init() {
+        try {
+          const res = await fetch('/api/chapters');
+          allCapitoli = await res.json();
+          renderChapters();
+        } catch (err) {
+          chapterList.innerHTML = `<p style="color:red">Errore caricamento: ${err.message}</p>`;
+        }
+      }
+
+      function renderChapters() {
+        chapterList.innerHTML = allCapitoli.map(chap => `
+          <label class="chapter-item">
+            <input type="checkbox" name="chapter" value="${chap}"> Pagina ${chap}
+          </label>
+        `).join('');
+      }
+
+      function selectAllChapters(status) {
+        document.querySelectorAll('input[name="chapter"]').forEach(cb => cb.checked = status);
+      }
+
+      // 2. QUIZ START
+      startBtn.onclick = async () => {
+        const selected = Array.from(document.querySelectorAll('input[name="chapter"]:checked')).map(cb => Number(cb.value));
+        const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
+
+        if (selected.length === 0) {
+          alert('Seleziona almeno un capitolo!');
           return;
         }
 
-        if (currentQuestion.has_correct_answer) {
-          answerStatusEl.textContent = "Risposta corretta presente: puoi verificare o modificarla.";
-          setCorrectBtn.textContent = "Modifica risposta corretta";
+        try {
+          const res = await fetch('/api/questions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chapters: selected })
+          });
+          
+          quizQuestions = await res.json();
+          if (mode === 'random') {
+            shuffleArray(quizQuestions);
+          }
+
+          currentIdx = 0;
+          userChoices = {};
+          shuffledStates = {};
+          resultsCache = {};
+
+          showQuiz();
+        } catch (err) {
+          alert('Errore: ' + err.message);
+        }
+      };
+
+      function showQuiz() {
+        setupScreen.hidden = true;
+        quizScreen.hidden = false;
+        renderCurrentQuestion();
+      }
+
+      function resetToSetup() {
+        if (!confirm('Vuoi davvero tornare al menu inizale? Perderai i progressi currenti.')) return;
+        quizScreen.hidden = true;
+        setupScreen.hidden = false;
+      }
+
+      // 3. CORE LOGIC: Shuffling & Rendering
+      function renderCurrentQuestion() {
+        const q = quizQuestions[currentIdx];
+        if (!q) return;
+
+        // Reset UI
+        resultMsg.hidden = true;
+        resultMsg.style.display = 'none';
+        
+        // Meta & Text
+        qMeta.textContent = `Pagina ${q.pagina} - Domanda ${q.numero}`;
+        qText.textContent = q.testo;
+        if (q.immagine_url) {
+          qImage.src = q.immagine_url;
+          qImage.hidden = false;
         } else {
-          answerStatusEl.textContent = "Nessuna risposta corretta impostata.";
-          setCorrectBtn.textContent = "Imposta risposta corretta";
+          qImage.hidden = true;
+        }
+
+        // Shuffling Logic
+        // If we haven't shuffled this question yet, create a mapping
+        if (!shuffledStates[q.id]) {
+          const mapping = q.risposte.map((_, i) => i);
+          shuffleArray(mapping);
+          shuffledStates[q.id] = mapping;
+        }
+
+        const currentMapping = shuffledStates[q.id];
+        
+        // Render answers
+        qAnswers.innerHTML = '';
+        currentMapping.forEach((originalIdx, uiIdx) => {
+          const letter = String.fromCharCode(65 + uiIdx); // A, B, C, D
+          const text = q.risposte[originalIdx];
+          
+          const div = document.createElement('div');
+          div.className = 'answer-option fade-in';
+          if (userChoices[q.id] === originalIdx) div.classList.add('selected');
+          
+          // Show correct/wrong if already checked
+          if (resultsCache[q.id]) {
+            const res = resultsCache[q.id];
+            if (originalIdx === res.correctAnswerIndex) div.classList.add('correct');
+            else if (userChoices[q.id] === originalIdx && !res.isCorrect) div.classList.add('error');
+          }
+
+          div.innerHTML = `
+            <div class="answer-letter">${letter}</div>
+            <div class="answer-text">${text}</div>
+          `;
+          
+          div.onclick = () => selectAnswer(q.id, originalIdx);
+          qAnswers.appendChild(div);
+        });
+
+        updateProgress();
+        updateNavButtons();
+
+        // Show cached result message if exists
+        if (resultsCache[q.id]) showResultMessage(resultsCache[q.id]);
+      }
+
+      function selectAnswer(qId, originalIdx) {
+        // Don't change if already answered and verified (optional, but let's allow changing unless locked)
+        userChoices[qId] = originalIdx;
+        renderCurrentQuestion();
+      }
+
+      async function verifyAnswer() {
+        const q = quizQuestions[currentIdx];
+        const selectedIdx = userChoices[q.id];
+
+        if (selectedIdx === undefined) {
+          alert('Seleziona una risposta prima di verificare.');
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/question/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              questionId: q.id,
+              answerIndex: selectedIdx
+            })
+          });
+          
+          const result = await res.json();
+          resultsCache[q.id] = result;
+          renderCurrentQuestion();
+          showResultMessage(result);
+        } catch (err) {
+          alert('Errore verifica: ' + err.message);
         }
       }
 
-      function getSelectedAnswerIndex() {
-        const selected = document.querySelector('input[name="answer"]:checked');
-        if (!selected) {
-          return null;
-        }
-        return Number(selected.value);
-      }
-
-      function renderQuestion(question) {
-        currentQuestion = question;
-        resultEl.textContent = "";
-        metaEl.textContent = `Pagina ${question.pagina} - Domanda ${question.numero}`;
-        questionTextEl.textContent = question.testo;
-
-        if (question.immagine_url) {
-          questionImageEl.src = question.immagine_url;
-          questionImageEl.hidden = false;
+      function showResultMessage(res) {
+        resultMsg.style.display = 'block';
+        if (res.isCorrect) {
+          resultMsg.className = 'msg-success';
+          resultMsg.textContent = 'Esatto! Ben fatto.';
         } else {
-          questionImageEl.src = "";
-          questionImageEl.hidden = true;
+          resultMsg.className = 'msg-error';
+          resultMsg.textContent = res.correctAnswer 
+            ? `Sbagliato. La risposta corretta è: ${res.correctAnswer}`
+            : 'Sbagliato.';
         }
-
-        answersEl.innerHTML = "";
-        question.risposte.forEach((answer, index) => {
-          const wrapper = document.createElement("label");
-          wrapper.className = "answer";
-
-          const input = document.createElement("input");
-          input.type = "radio";
-          input.name = "answer";
-          input.value = String(index);
-
-          const text = document.createElement("span");
-          text.textContent = answer;
-
-          wrapper.appendChild(input);
-          wrapper.appendChild(text);
-          answersEl.appendChild(wrapper);
-        });
-
-        updateAnswerStatus();
       }
 
-      async function fetchRandomQuestion() {
-        const response = await fetch("/api/question/random");
-        if (!response.ok) {
-          throw new Error("Impossibile caricare una domanda casuale.");
-        }
-        const question = await response.json();
-        renderQuestion(question);
+      // 4. NAVIGATION
+      function updateProgress() {
+        const total = quizQuestions.length;
+        const current = currentIdx + 1;
+        progressText.textContent = `Domanda ${current} di ${total}`;
+        progressFill.style.width = `${(current / total) * 100}%`;
       }
 
-      async function checkAnswer() {
-        if (!currentQuestion) {
-          return;
-        }
-
-        const selectedIndex = getSelectedAnswerIndex();
-        if (selectedIndex === null) {
-          resultEl.textContent = "Seleziona prima una risposta.";
-          return;
-        }
-
-        const payload = {
-          questionId: currentQuestion.id,
-          answerIndex: selectedIndex
-        };
-
-        const response = await fetch("/api/question/check", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          resultEl.textContent = data.error || "Errore durante il check.";
-          return;
-        }
-
-        if (!data.isValidChoice) {
-          resultEl.textContent = "Risposta non valida per questa domanda.";
-          return;
-        }
-
-        if (!data.hasCorrectAnswer) {
-          currentQuestion.has_correct_answer = false;
-          updateAnswerStatus();
-          resultEl.textContent =
-            "Nessuna risposta corretta impostata. Usa il tasto 'Imposta risposta corretta'.";
-          return;
-        }
-
-        currentQuestion.has_correct_answer = true;
-        updateAnswerStatus();
-        resultEl.textContent = data.isCorrect
-          ? "Risposta corretta."
-          : `Risposta errata. Corretta: ${data.correctAnswer}`;
+      function updateNavButtons() {
+        prevBtn.disabled = currentIdx === 0;
+        nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? 'Finito' : 'Avanti \u2192';
       }
 
-      async function setCorrectAnswer() {
-        if (!currentQuestion) {
-          return;
+      prevBtn.onclick = () => {
+        if (currentIdx > 0) {
+          currentIdx--;
+          renderCurrentQuestion();
         }
+      };
 
-        const selectedIndex = getSelectedAnswerIndex();
-        if (selectedIndex === null) {
-          resultEl.textContent = "Seleziona prima una risposta da impostare.";
-          return;
+      nextBtn.onclick = () => {
+        if (currentIdx < quizQuestions.length - 1) {
+          currentIdx++;
+          renderCurrentQuestion();
+        } else {
+          if (confirm('Hai completato tutte le domande. Tornare al menu?')) {
+            quizScreen.hidden = true;
+            setupScreen.hidden = false;
+          }
         }
+      };
 
-        const response = await fetch("/api/question/set-correct", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            questionId: currentQuestion.id,
-            answerIndex: selectedIndex
-          })
-        });
+      checkBtn.onclick = verifyAnswer;
 
-        const data = await response.json();
-        if (!response.ok) {
-          resultEl.textContent = data.error || "Errore durante il salvataggio.";
-          return;
+      // 5. UTILS
+      // Fisher-Yates shuffle
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
         }
-
-        currentQuestion.has_correct_answer = true;
-        updateAnswerStatus();
-        resultEl.textContent = `${data.message} (${data.correctAnswer})`;
       }
 
-      newQuestionBtn.addEventListener("click", () => {
-        fetchRandomQuestion().catch((error) => {
-          resultEl.textContent = error.message;
-        });
-      });
-
-      checkBtn.addEventListener("click", () => {
-        checkAnswer().catch((error) => {
-          resultEl.textContent = error.message;
-        });
-      });
-
-      setCorrectBtn.addEventListener("click", () => {
-        setCorrectAnswer().catch((error) => {
-          resultEl.textContent = error.message;
-        });
-      });
-
-      fetchRandomQuestion().catch((error) => {
-        resultEl.textContent = error.message;
-      });
+      init();
     </script>
   </body>
 </html>
