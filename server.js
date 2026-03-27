@@ -6,6 +6,7 @@ const app = express();
 const PORT = Number(process.env.PORT) || 1111;
 
 const QUIZ_FILE = path.join(__dirname, "quiz_estratti.json");
+const PROGRESS_FILE = path.join(__dirname, "user_progress.json");
 
 const IMAGES_DIR = path.join(__dirname, "immagini_quiz");
 
@@ -94,10 +95,28 @@ function loadStore() {
   };
 }
 
+function loadProgress() {
+  if (!fs.existsSync(PROGRESS_FILE)) {
+    return {};
+  }
+  try {
+    const raw = fs.readFileSync(PROGRESS_FILE, "utf-8");
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error("Errore nel caricamento del progresso:", err);
+    return {};
+  }
+}
+
 let store = loadStore();
+let progress = loadProgress();
 
 function persistRawQuestions() {
   fs.writeFileSync(QUIZ_FILE, `${JSON.stringify(store.rawQuestions, null, 4)}\n`, "utf-8");
+}
+
+function persistProgress() {
+  fs.writeFileSync(PROGRESS_FILE, `${JSON.stringify(progress, null, 2)}\n`, "utf-8");
 }
 
 function readSelectedIndex(question, answerIndex, answerText) {
@@ -116,6 +135,10 @@ function readSelectedIndex(question, answerIndex, answerText) {
 app.get("/api/chapters", (_req, res) => {
   const chapters = [...new Set(store.questions.map((q) => q.pagina))].sort((a, b) => a - b);
   res.json(chapters);
+});
+
+app.get("/api/progress", (_req, res) => {
+  res.json(progress);
 });
 
 app.post("/api/questions", (req, res) => {
@@ -228,6 +251,28 @@ app.post("/api/question/set-correct", (req, res) => {
     correctAnswer: question.risposte[selectedIndex],
     message: hadCorrectAnswer ? "Risposta corretta modificata." : "Risposta corretta impostata."
   });
+});
+
+app.post("/api/progress", (req, res) => {
+  const { questionId, answerIndex, isCorrect, result } = req.body || {};
+
+  if (!questionId) {
+    return res.status(400).json({ error: "questionId mancante." });
+  }
+
+  progress[questionId] = {
+    answerIndex,
+    isCorrect,
+    result,
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    persistProgress();
+    res.json({ status: "success" });
+  } catch (err) {
+    res.status(500).json({ error: "Errore nel salvataggio del progresso." });
+  }
 });
 
 app.get("/api/health", (_req, res) => {

@@ -1,663 +1,759 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Antigravity Quiz Avanzato</title>
-    <style>
-      :root {
-        --bg: #0f172a;
-        --card: #1e293b;
-        --text: #f1f5f9;
-        --text-muted: #94a3b8;
-        --accent: #3b82f6;
-        --accent-hover: #2563eb;
-        --success: #10b981;
-        --error: #ef4444;
-        --border: #334155;
-        --glass: rgba(30, 41, 59, 0.7);
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Antigravity Quiz Avanzato</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --error: #ef4444;
+      --border: #334155;
+      --glass: rgba(30, 41, 59, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top right, #1e293b, #0f172a);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .container {
+      width: min(800px, 100%);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, #60a5fa, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+
+    /* Setup Screen Styles */
+    .setup-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.5rem;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 1rem;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .chapter-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .chapter-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .mode-selection {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 0.8rem 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    /* Quiz Screen Styles */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .progress-container {
+      flex-grow: 1;
+      margin-right: 1.5rem;
+    }
+
+    .progress-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, #3b82f6, #8b5cf6);
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      margin-bottom: 2rem;
+    }
+
+    .meta {
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      line-height: 1.5;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .question-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem;
+    }
+
+    .answers-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .answer-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .answer-option:hover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .answer-option.selected {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.15);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .answer-option.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.15);
+    }
+
+    .answer-option.error {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .answer-radio {
+      display: none;
+    }
+
+    .answer-letter {
+      width: 28px;
+      height: 28px;
+      background: var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .selected .answer-letter {
+      background: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    #result-msg {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+    }
+
+    .msg-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .msg-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+
+    .msg-info {
+      background: rgba(251, 191, 36, 0.1);
+      color: #fbbf24;
+      border: 1px solid #fbbf24;
+    }
+
+    .btn-set-correct {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+
+    .btn-set-correct:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      transform: translateY(-1px);
+    }
+
+    .answer-option.set-correct {
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.12);
+    }
+
+    /* Transitions */
+    .fade-in {
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
       }
 
-      * {
-        box-sizing: border-box;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
+    }
 
-      body {
-        margin: 0;
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        background: radial-gradient(circle at top right, #1e293b, #0f172a);
-        color: var(--text);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1.5rem;
-      }
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
 
-      .container {
-        width: min(800px, 100%);
-        background: var(--glass);
-        backdrop-filter: blur(12px);
-        border: 1px solid var(--border);
-        border-radius: 24px;
-        padding: 2rem;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      }
+<body>
+  <div class="container fade-in">
+    <header>
+      <h1>Antigravity Quiz v2.4</h1>
+    </header>
 
-      h1 {
-        font-size: 1.8rem;
-        font-weight: 800;
-        margin-bottom: 1.5rem;
-        background: linear-gradient(to right, #60a5fa, #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-align: center;
-      }
-
-      /* Setup Screen Styles */
-      .setup-section {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-
-      .chapter-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 0.5rem;
-        max-height: 300px;
-        overflow-y: auto;
-        padding: 1rem;
-        background: rgba(15, 23, 42, 0.5);
-        border-radius: 12px;
-        border: 1px solid var(--border);
-      }
-
-      .chapter-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.85rem;
-        cursor: pointer;
-        padding: 0.4rem;
-        border-radius: 6px;
-        transition: background 0.2s;
-      }
-
-      .chapter-item:hover {
-        background: rgba(59, 130, 246, 0.1);
-      }
-
-      .mode-selection {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-      }
-
-      .btn {
-        border: none;
-        border-radius: 12px;
-        padding: 0.8rem 1.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-      }
-
-      .btn-primary {
-        background: var(--accent);
-        color: white;
-      }
-
-      .btn-primary:hover {
-        background: var(--accent-hover);
-        transform: translateY(-1px);
-      }
-
-      .btn-secondary {
-        background: var(--border);
-        color: var(--text);
-      }
-
-      /* Quiz Screen Styles */
-      .quiz-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-      }
-
-      .progress-container {
-        flex-grow: 1;
-        margin-right: 1.5rem;
-      }
-
-      .progress-label {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        margin-bottom: 0.5rem;
-        display: block;
-      }
-
-      .progress-bar {
-        height: 8px;
-        background: var(--border);
-        border-radius: 4px;
-        overflow: hidden;
-      }
-
-      .progress-fill {
-        height: 100%;
-        background: linear-gradient(to right, #3b82f6, #8b5cf6);
-        transition: width 0.3s ease;
-      }
-
-      .question-card {
-        margin-bottom: 2rem;
-      }
-
-      .meta {
-        font-size: 0.8rem;
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 0.5rem;
-      }
-
-      .question-text {
-        font-size: 1.2rem;
-        line-height: 1.5;
-        font-weight: 500;
-        margin-bottom: 1.5rem;
-      }
-
-      .question-image {
-        width: 100%;
-        max-height: 400px;
-        object-fit: contain;
-        background: white;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        padding: 0.5rem;
-      }
-
-      .answers-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-      }
-
-      .answer-option {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        padding: 1rem;
-        background: rgba(30, 41, 59, 0.5);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .answer-option:hover {
-        border-color: var(--accent);
-        background: rgba(59, 130, 246, 0.05);
-      }
-
-      .answer-option.selected {
-        border-color: var(--accent);
-        background: rgba(59, 130, 246, 0.15);
-        box-shadow: 0 0 0 1px var(--accent);
-      }
-
-      .answer-option.correct {
-        border-color: var(--success);
-        background: rgba(16, 185, 129, 0.15);
-      }
-
-      .answer-option.error {
-        border-color: var(--error);
-        background: rgba(239, 68, 68, 0.15);
-      }
-
-      .answer-radio {
-        display: none;
-      }
-
-      .answer-letter {
-        width: 28px;
-        height: 28px;
-        background: var(--border);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-        font-weight: 700;
-        flex-shrink: 0;
-      }
-
-      .selected .answer-letter {
-        background: var(--accent);
-      }
-
-      .nav-actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border);
-      }
-
-      #result-msg {
-        margin-top: 1.5rem;
-        padding: 1rem;
-        border-radius: 12px;
-        font-weight: 500;
-        text-align: center;
-        display: none;
-      }
-
-      .msg-success { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
-      .msg-error { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error); }
-      .msg-info { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid #fbbf24; }
-
-      .btn-set-correct {
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-        color: white;
-      }
-      .btn-set-correct:hover {
-        background: linear-gradient(135deg, #d97706, #b45309);
-        transform: translateY(-1px);
-      }
-
-      .answer-option.set-correct {
-        border-color: #fbbf24;
-        background: rgba(251, 191, 36, 0.12);
-      }
-
-      /* Transitions */
-      .fade-in { animation: fadeIn 0.4s ease-out; }
-      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-      [hidden] { display: none !important; }
-    </style>
-  </head>
-  <body>
-    <div class="container fade-in">
-      <header>
-        <h1>Antigravity Quiz</h1>
-      </header>
-
-      <!-- SETUP SCREEN -->
-      <div id="setup-screen">
-        <div class="setup-section">
-          <h3>Seleziona Capitoli (Pagine)</h3>
-          <div id="chapter-list" class="chapter-grid">
-            <p class="text-muted">Caricamento capitoli...</p>
-          </div>
-
-          <div class="selection-tools">
-            <button class="btn btn-secondary" onclick="selectAllChapters(true)">Seleziona Tutti</button>
-            <button class="btn btn-secondary" onclick="selectAllChapters(false)">Deseleziona Tutti</button>
-          </div>
-
-          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;">
-
-          <h3>Modalità di Navigazione</h3>
-          <div class="mode-selection">
-            <label class="chapter-item">
-              <input type="radio" name="navigation-mode" value="sequential" checked> Sequenziale
-            </label>
-            <label class="chapter-item">
-              <input type="radio" name="navigation-mode" value="random"> Casuale (Mischia)
-            </label>
-          </div>
-
-          <button id="start-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-            Inizia Quiz
-          </button>
-        </div>
-      </div>
-
-      <!-- QUIZ SCREEN -->
-      <div id="quiz-screen" hidden>
-        <div class="quiz-header">
-          <div class="progress-container">
-            <span id="progress-text" class="progress-label">Domanda 0 di 0</span>
-            <div class="progress-bar">
-              <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
-            </div>
-          </div>
-          <button class="btn btn-secondary" onclick="resetToSetup()">Menu</button>
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen">
+      <div class="setup-section">
+        <h3>Seleziona Capitoli (Pagine)</h3>
+        <div id="chapter-list" class="chapter-grid">
+          <p class="text-muted">Caricamento capitoli...</p>
         </div>
 
-        <div id="question-container" class="question-card">
-          <div class="meta" id="q-meta">Pagina 0 - Domanda 0</div>
-          <div class="question-text" id="q-text">Testo della domanda...</div>
-          <img id="q-image" class="question-image" src="" alt="Allegato" hidden>
-
-          <div class="answers-grid" id="q-answers">
-            <!-- Answers go here -->
-          </div>
+        <div class="selection-tools">
+          <button class="btn btn-secondary" onclick="selectAllChapters(true)">Seleziona Tutti</button>
+          <button class="btn btn-secondary" onclick="selectAllChapters(false)">Deseleziona Tutti</button>
         </div>
 
-        <div id="result-msg"></div>
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;">
 
-        <div class="nav-actions">
-          <button id="prev-btn" class="btn btn-secondary">
-            &larr; Indietro
-          </button>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <button id="set-correct-btn" class="btn btn-set-correct" title="Imposta la risposta selezionata come corretta (salva permanentemente)">✎ Imposta Corretta</button>
-            <button id="check-btn" class="btn btn-primary">Verifica</button>
-            <button id="next-btn" class="btn btn-primary">
-              Avanti &rarr;
-            </button>
-          </div>
+        <h3>Modalità di Navigazione</h3>
+        <div class="mode-selection">
+          <label class="chapter-item">
+            <input type="radio" name="navigation-mode" value="sequential" checked> Sequenziale
+          </label>
+          <label class="chapter-item">
+            <input type="radio" name="navigation-mode" value="random"> Casuale (Mischia)
+          </label>
         </div>
+
+        <button id="start-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+          Inizia Quiz
+        </button>
       </div>
     </div>
 
-    <script>
-      // STATE
-      let allCapitoli = [];
-      let quizQuestions = [];
-      let currentIdx = 0;
-      let userChoices = {}; // { questionId: originalIndex }
-      let shuffledStates = {}; // { questionId: [mapping_array] }
-      let resultsCache = {}; // { questionId: resultObj }
+    <!-- QUIZ SCREEN -->
+    <div id="quiz-screen" hidden>
+      <div class="quiz-header">
+        <div class="progress-container">
+          <span id="progress-text" class="progress-label">Domanda 0 di 0</span>
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="resetToSetup()">Menu</button>
+      </div>
 
-      // UI ELEMENTS
-      const setupScreen = document.getElementById('setup-screen');
-      const quizScreen = document.getElementById('quiz-screen');
-      const chapterList = document.getElementById('chapter-list');
-      const startBtn = document.getElementById('start-btn');
-      const qText = document.getElementById('q-text');
-      const qMeta = document.getElementById('q-meta');
-      const qImage = document.getElementById('q-image');
-      const qAnswers = document.getElementById('q-answers');
-      const prevBtn = document.getElementById('prev-btn');
-      const nextBtn = document.getElementById('next-btn');
-      const checkBtn = document.getElementById('check-btn');
-      const setCorrectBtn = document.getElementById('set-correct-btn');
-      const progressText = document.getElementById('progress-text');
-      const progressFill = document.getElementById('progress-fill');
-      const resultMsg = document.getElementById('result-msg');
+      <div id="question-container" class="question-card">
+        <div class="meta" id="q-meta">Pagina 0 - Domanda 0</div>
+        <div class="question-text" id="q-text">Testo della domanda...</div>
+        <img id="q-image" class="question-image" src="" alt="Allegato" hidden>
 
-      // 1. INITIALIZATION
-      async function init() {
-        try {
-          const res = await fetch('/api/chapters');
-          allCapitoli = await res.json();
-          renderChapters();
-        } catch (err) {
-          chapterList.innerHTML = `<p style="color:red">Errore caricamento: ${err.message}</p>`;
-        }
+        <div class="answers-grid" id="q-answers">
+          <!-- Answers go here -->
+        </div>
+      </div>
+
+      <div id="result-msg"></div>
+
+      <div class="nav-actions">
+        <button id="prev-btn" class="btn btn-secondary">
+          &larr; Indietro
+        </button>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+          <button id="set-correct-btn" class="btn btn-set-correct"
+            title="Imposta la risposta selezionata come corretta (salva permanentemente)">✎ Imposta Corretta</button>
+          <button id="check-btn" class="btn btn-primary">Verifica</button>
+          <button id="next-btn" class="btn btn-primary">
+            Avanti &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // STATE
+    let allCapitoli = [];
+    let quizQuestions = [];
+    let currentIdx = 0;
+    let userChoices = {}; // { questionId: originalIndex }
+    let shuffledStates = {}; // { questionId: [mapping_array] }
+    let resultsCache = {}; // { questionId: resultObj }
+    let serverProgress = {}; // { questionId: { answerIndex, isCorrect, result } }
+
+    // UI ELEMENTS
+    const setupScreen = document.getElementById('setup-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const chapterList = document.getElementById('chapter-list');
+    const startBtn = document.getElementById('start-btn');
+    const qText = document.getElementById('q-text');
+    const qMeta = document.getElementById('q-meta');
+    const qImage = document.getElementById('q-image');
+    const qAnswers = document.getElementById('q-answers');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const checkBtn = document.getElementById('check-btn');
+    const setCorrectBtn = document.getElementById('set-correct-btn');
+    const progressText = document.getElementById('progress-text');
+    const progressFill = document.getElementById('progress-fill');
+    const resultMsg = document.getElementById('result-msg');
+
+    // 1. INITIALIZATION
+    async function init() {
+      try {
+        // Carica capitoli
+        const resChapters = await fetch('/api/chapters');
+        allCapitoli = await resChapters.json();
+        renderChapters();
+
+        // Carica progressi dal server
+        const resProgress = await fetch('/api/progress');
+        serverProgress = await resProgress.json();
+
+        // Carica impostazioni locali per i capitoli (per comodità)
+        loadLocalSettings();
+      } catch (err) {
+        chapterList.innerHTML = `<p style="color:red">Errore caricamento: ${err.message}</p>`;
       }
+    }
 
-      function renderChapters() {
-        chapterList.innerHTML = allCapitoli.map(chap => `
+    function loadLocalSettings() {
+      const savedChaps = localStorage.getItem('quiz_selected_chapters');
+      if (savedChaps) {
+        try {
+          const chaps = JSON.parse(savedChaps);
+          document.querySelectorAll('input[name="chapter"]').forEach(cb => {
+            if (chaps.includes(Number(cb.value))) cb.checked = true;
+          });
+        } catch (e) { }
+      }
+      const savedMode = localStorage.getItem('quiz_nav_mode');
+      if (savedMode) {
+        const radio = document.querySelector(`input[name="navigation-mode"][value="${savedMode}"]`);
+        if (radio) radio.checked = true;
+      }
+    }
+
+    function saveLocalSettings() {
+      const selected = Array.from(document.querySelectorAll('input[name="chapter"]:checked')).map(cb => Number(cb.value));
+      const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
+      localStorage.setItem('quiz_selected_chapters', JSON.stringify(selected));
+      localStorage.setItem('quiz_nav_mode', mode);
+    }
+
+    function renderChapters() {
+      chapterList.innerHTML = allCapitoli.map(chap => `
           <label class="chapter-item">
             <input type="checkbox" name="chapter" value="${chap}"> Pagina ${chap}
           </label>
         `).join('');
+    }
+
+    function selectAllChapters(status) {
+      document.querySelectorAll('input[name="chapter"]').forEach(cb => cb.checked = status);
+    }
+
+    // 2. QUIZ START
+    startBtn.onclick = async () => {
+      const selected = Array.from(document.querySelectorAll('input[name="chapter"]:checked')).map(cb => Number(cb.value));
+      const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
+
+      if (selected.length === 0) {
+        alert('Seleziona almeno un capitolo!');
+        return;
       }
 
-      function selectAllChapters(status) {
-        document.querySelectorAll('input[name="chapter"]').forEach(cb => cb.checked = status);
-      }
+      saveLocalSettings();
 
-      // 2. QUIZ START
-      startBtn.onclick = async () => {
-        const selected = Array.from(document.querySelectorAll('input[name="chapter"]:checked')).map(cb => Number(cb.value));
-        const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
+      try {
+        const res = await fetch('/api/questions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chapters: selected })
+        });
 
-        if (selected.length === 0) {
-          alert('Seleziona almeno un capitolo!');
-          return;
+        quizQuestions = await res.json();
+        if (mode === 'random') {
+          shuffleArray(quizQuestions);
         }
 
-        try {
-          const res = await fetch('/api/questions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chapters: selected })
-          });
-          
-          quizQuestions = await res.json();
-          if (mode === 'random') {
-            shuffleArray(quizQuestions);
+        currentIdx = 0;
+        userChoices = {};
+        shuffledStates = {};
+        resultsCache = {};
+
+        // Integra i progressi del server nelle variabili locali del quiz
+        quizQuestions.forEach(q => {
+          if (serverProgress[q.id]) {
+            const prog = serverProgress[q.id];
+            userChoices[q.id] = prog.answerIndex;
+            if (prog.result) {
+              resultsCache[q.id] = prog.result;
+            }
           }
+        });
 
-          currentIdx = 0;
-          userChoices = {};
-          shuffledStates = {};
-          resultsCache = {};
+        showQuiz();
+      } catch (err) {
+        alert('Errore caricamente domande: ' + err.message);
+      }
+    };
 
-          showQuiz();
-        } catch (err) {
-          alert('Errore: ' + err.message);
-        }
-      };
+    function showQuiz() {
+      const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
+      setCorrectBtn.hidden = (mode !== 'sequential');
 
-      function showQuiz() {
-        const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
-        setCorrectBtn.hidden = (mode !== 'sequential');
-        
-        setupScreen.hidden = true;
-        quizScreen.hidden = false;
-        renderCurrentQuestion();
+      setupScreen.hidden = true;
+      quizScreen.hidden = false;
+      renderCurrentQuestion();
+    }
+
+    function resetToSetup() {
+      if (!confirm('Tornare al menu? I tuoi progressi di questa sessione rimangono salvati.')) return;
+      quizScreen.hidden = true;
+      setupScreen.hidden = false;
+    }
+
+    // 3. CORE LOGIC: Shuffling & Rendering
+    function renderCurrentQuestion() {
+      const q = quizQuestions[currentIdx];
+      if (!q) return;
+
+      // Reset UI
+      resultMsg.hidden = true;
+      resultMsg.style.display = 'none';
+
+      // Meta & Indicatori
+      let statusTag = "";
+      if (q.has_correct_answer) {
+        statusTag = " <span style='color:var(--success); font-size: 0.75rem; font-weight: bold; background: rgba(16,185,129,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 8px;'>\u2714 SALVATA</span>";
       }
 
-      function resetToSetup() {
-        if (!confirm('Vuoi davvero tornare al menu inizale? Perderai i progressi currenti.')) return;
-        quizScreen.hidden = true;
-        setupScreen.hidden = false;
+      qMeta.innerHTML = `Pagina ${q.pagina} - Domanda ${q.numero}${statusTag}`;
+      qText.textContent = q.testo;
+      if (q.immagine_url) {
+        qImage.src = q.immagine_url;
+        qImage.hidden = false;
+      } else {
+        qImage.hidden = true;
       }
 
-      // 3. CORE LOGIC: Shuffling & Rendering
-      function renderCurrentQuestion() {
-        const q = quizQuestions[currentIdx];
-        if (!q) return;
+      // Shuffling Logic
+      if (!shuffledStates[q.id]) {
+        const mapping = q.risposte.map((_, i) => i);
+        shuffleArray(mapping);
+        shuffledStates[q.id] = mapping;
+      }
 
-        // Reset UI
-        resultMsg.hidden = true;
-        resultMsg.style.display = 'none';
-        
-        // Meta & Text
-        qMeta.textContent = `Pagina ${q.pagina} - Domanda ${q.numero}`;
-        qText.textContent = q.testo;
-        if (q.immagine_url) {
-          qImage.src = q.immagine_url;
-          qImage.hidden = false;
-        } else {
-          qImage.hidden = true;
+      const currentMapping = shuffledStates[q.id];
+
+      // Render answers
+      qAnswers.innerHTML = '';
+      currentMapping.forEach((originalIdx, uiIdx) => {
+        const letter = String.fromCharCode(65 + uiIdx);
+        const text = q.risposte[originalIdx];
+
+        const div = document.createElement('div');
+        div.className = 'answer-option fade-in';
+        if (userChoices[q.id] === originalIdx) div.classList.add('selected');
+
+        // Show correct/wrong if exists in cache
+        if (resultsCache[q.id]) {
+          const res = resultsCache[q.id];
+          if (originalIdx === res.correctAnswerIndex) div.classList.add('correct');
+          else if (userChoices[q.id] === originalIdx && !res.isCorrect) div.classList.add('error');
         }
 
-        // Shuffling Logic
-        // If we haven't shuffled this question yet, create a mapping
-        if (!shuffledStates[q.id]) {
-          const mapping = q.risposte.map((_, i) => i);
-          shuffleArray(mapping);
-          shuffledStates[q.id] = mapping;
-        }
-
-        const currentMapping = shuffledStates[q.id];
-        
-        // Render answers
-        qAnswers.innerHTML = '';
-        currentMapping.forEach((originalIdx, uiIdx) => {
-          const letter = String.fromCharCode(65 + uiIdx); // A, B, C, D
-          const text = q.risposte[originalIdx];
-          
-          const div = document.createElement('div');
-          div.className = 'answer-option fade-in';
-          if (userChoices[q.id] === originalIdx) div.classList.add('selected');
-          
-          // Show correct/wrong if already checked
-          if (resultsCache[q.id]) {
-            const res = resultsCache[q.id];
-            if (originalIdx === res.correctAnswerIndex) div.classList.add('correct');
-            else if (userChoices[q.id] === originalIdx && !res.isCorrect) div.classList.add('error');
-          }
-
-          div.innerHTML = `
+        div.innerHTML = `
             <div class="answer-letter">${letter}</div>
             <div class="answer-text">${text}</div>
           `;
-          
-          div.onclick = () => selectAnswer(q.id, originalIdx);
-          qAnswers.appendChild(div);
+
+        div.onclick = () => selectAnswer(q.id, originalIdx);
+        qAnswers.appendChild(div);
+      });
+
+      updateProgress();
+      updateNavButtons();
+
+      if (resultsCache[q.id]) showResultMessage(resultsCache[q.id]);
+    }
+
+    function selectAnswer(qId, originalIdx) {
+      userChoices[qId] = originalIdx;
+      renderCurrentQuestion();
+    }
+
+    async function verifyAnswer() {
+      const q = quizQuestions[currentIdx];
+      const selectedIdx = userChoices[q.id];
+
+      if (selectedIdx === undefined) {
+        alert('Seleziona una risposta prima di verificare.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/question/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            questionId: q.id,
+            answerIndex: selectedIdx
+          })
         });
 
-        updateProgress();
-        updateNavButtons();
+        const result = await res.json();
+        resultsCache[q.id] = result;
 
-        // Show cached result message if exists
-        if (resultsCache[q.id]) showResultMessage(resultsCache[q.id]);
+        // Sincronizza progresso con server
+        saveProgressToServer(q.id, selectedIdx, result.isCorrect, result);
+
+        renderCurrentQuestion();
+        showResultMessage(result);
+      } catch (err) {
+        alert('Errore verifica: ' + err.message);
+      }
+    }
+
+    async function saveProgressToServer(qId, answerIndex, isCorrect, result) {
+      try {
+        await fetch('/api/progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ questionId: qId, answerIndex, isCorrect, result })
+        });
+        // Aggiorna memoria locale dei progressi server
+        serverProgress[qId] = { answerIndex, isCorrect, result };
+      } catch (err) {
+        console.error("Errore salvataggio progresso server:", err);
+      }
+    }
+
+    function showResultMessage(res) {
+      resultMsg.style.display = 'block';
+      resultMsg.hidden = false;
+      if (res._setCorrect) {
+        resultMsg.className = 'msg-info';
+        resultMsg.textContent = res.message || 'Risposta corretta impostata permanentemente.';
+      } else if (res.isCorrect) {
+        resultMsg.className = 'msg-success';
+        resultMsg.textContent = 'Esatto! Risposta salvata.';
+      } else {
+        resultMsg.className = 'msg-error';
+        resultMsg.textContent = res.correctAnswer
+          ? `Sbagliato. La corretta è: ${res.correctAnswer}`
+          : 'Sbagliato.';
+      }
+    }
+
+    async function setCorrectAnswer() {
+      const q = quizQuestions[currentIdx];
+      const selectedIdx = userChoices[q.id];
+
+      if (selectedIdx === undefined) {
+        alert('Seleziona prima una risposta.');
+        return;
       }
 
-      function selectAnswer(qId, originalIdx) {
-        // Don't change if already answered and verified (optional, but let's allow changing unless locked)
-        userChoices[qId] = originalIdx;
+      try {
+        const res = await fetch('/api/question/set-correct', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            questionId: q.id,
+            answerIndex: selectedIdx
+          })
+        });
+
+        const result = await res.json();
+        if (!res.ok) {
+          alert('Errore: ' + (result.error || 'Errore sconosciuto'));
+          return;
+        }
+
+        q.has_correct_answer = true;
+        delete resultsCache[q.id];
+        result._setCorrect = true;
+
+        // Salva anche come progresso utente
+        saveProgressToServer(q.id, selectedIdx, true, { ...result, isCorrect: true });
+
+        showResultMessage(result);
+        renderCurrentQuestion();
+      } catch (err) {
+        alert('Errore salvataggio: ' + err.message);
+      }
+    }
+
+    setCorrectBtn.onclick = setCorrectAnswer;
+
+    function updateProgress() {
+      const total = quizQuestions.length;
+      const current = currentIdx + 1;
+      progressText.textContent = `Domanda ${current} di ${total}`;
+      progressFill.style.width = `${(current / total) * 100}%`;
+    }
+
+    function updateNavButtons() {
+      prevBtn.disabled = currentIdx === 0;
+      nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? 'Finito' : 'Avanti \u2192';
+    }
+
+    prevBtn.onclick = () => {
+      if (currentIdx > 0) {
+        currentIdx--;
         renderCurrentQuestion();
       }
+    };
 
-      async function verifyAnswer() {
-        const q = quizQuestions[currentIdx];
-        const selectedIdx = userChoices[q.id];
-
-        if (selectedIdx === undefined) {
-          alert('Seleziona una risposta prima di verificare.');
-          return;
-        }
-
-        try {
-          const res = await fetch('/api/question/check', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              questionId: q.id,
-              answerIndex: selectedIdx
-            })
-          });
-          
-          const result = await res.json();
-          resultsCache[q.id] = result;
-          renderCurrentQuestion();
-          showResultMessage(result);
-        } catch (err) {
-          alert('Errore verifica: ' + err.message);
+    nextBtn.onclick = () => {
+      if (currentIdx < quizQuestions.length - 1) {
+        currentIdx++;
+        renderCurrentQuestion();
+      } else {
+        if (confirm('Quiz completato! Tornare al menu?')) {
+          quizScreen.hidden = true;
+          setupScreen.hidden = false;
         }
       }
+    };
 
-      function showResultMessage(res) {
-        resultMsg.style.display = 'block';
-        resultMsg.hidden = false;
-        if (res._setCorrect) {
-          resultMsg.className = 'msg-info';
-          resultMsg.textContent = res.message || 'Risposta corretta impostata.';
-        } else if (res.isCorrect) {
-          resultMsg.className = 'msg-success';
-          resultMsg.textContent = 'Esatto! Ben fatto.';
-        } else {
-          resultMsg.className = 'msg-error';
-          resultMsg.textContent = res.correctAnswer 
-            ? `Sbagliato. La risposta corretta è: ${res.correctAnswer}`
-            : 'Sbagliato.';
-        }
+    checkBtn.onclick = verifyAnswer;
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
       }
+    }
 
-      // SET CORRECT ANSWER
-      async function setCorrectAnswer() {
-        const q = quizQuestions[currentIdx];
-        const selectedIdx = userChoices[q.id];
+    init();
+  </script>
+</body>
 
-        if (selectedIdx === undefined) {
-          alert('Seleziona prima una risposta da impostare come corretta.');
-          return;
-        }
-
-        try {
-          const res = await fetch('/api/question/set-correct', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              questionId: q.id,
-              answerIndex: selectedIdx
-            })
-          });
-
-          const result = await res.json();
-          if (!res.ok) {
-            alert('Errore: ' + (result.error || 'Errore sconosciuto'));
-            return;
-          }
-
-          // Update local question state
-          q.has_correct_answer = true;
-
-          // Clear any old check result and store a "set" marker so UI updates
-          delete resultsCache[q.id];
-
-          result._setCorrect = true;
-          showResultMessage(result);
-          renderCurrentQuestion();
-        } catch (err) {
-          alert('Errore salvataggio: ' + err.message);
-        }
-      }
-
-      setCorrectBtn.onclick = setCorrectAnswer;
-
-      // 4. NAVIGATION
-      function updateProgress() {
-        const total = quizQuestions.length;
-        const current = currentIdx + 1;
-        progressText.textContent = `Domanda ${current} di ${total}`;
-        progressFill.style.width = `${(current / total) * 100}%`;
-      }
-
-      function updateNavButtons() {
-        prevBtn.disabled = currentIdx === 0;
-        nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? 'Finito' : 'Avanti \u2192';
-      }
-
-      prevBtn.onclick = () => {
-        if (currentIdx > 0) {
-          currentIdx--;
-          renderCurrentQuestion();
-        }
-      };
-
-      nextBtn.onclick = () => {
-        if (currentIdx < quizQuestions.length - 1) {
-          currentIdx++;
-          renderCurrentQuestion();
-        } else {
-          if (confirm('Hai completato tutte le domande. Tornare al menu?')) {
-            quizScreen.hidden = true;
-            setupScreen.hidden = false;
-          }
-        }
-      };
-
-      checkBtn.onclick = verifyAnswer;
-
-      // 5. UTILS
-      // Fisher-Yates shuffle
-      function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-      }
-
-      init();
-    </script>
-  </body>
 </html>
