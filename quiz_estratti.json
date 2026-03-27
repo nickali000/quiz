@@ -10,7 +10,9 @@
         ],
         "immagine_path": null,
         "y0_domanda": 117.76336669921875,
-        "pagina": 3
+        "pagina": 3,
+        "risposta_corretta_index": 3,
+        "risposta_corretta": "tristearina (un trigliceride)"
     },
     {
         "numero": "02",
