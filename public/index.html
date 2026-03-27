@@ -51,6 +51,7 @@
       margin-bottom: 1.5rem;
       background: linear-gradient(to right, #60a5fa, #a855f7);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       text-align: center;
     }
@@ -321,7 +322,7 @@
 <body>
   <div class="container fade-in">
     <header>
-      <h1>Antigravity Quiz v2.4</h1>
+      <h1>Antigravity Quiz v2.5</h1>
     </header>
 
     <!-- SETUP SCREEN -->
@@ -505,17 +506,6 @@
         userChoices = {};
         shuffledStates = {};
         resultsCache = {};
-
-        // Integra i progressi del server nelle variabili locali del quiz
-        quizQuestions.forEach(q => {
-          if (serverProgress[q.id]) {
-            const prog = serverProgress[q.id];
-            userChoices[q.id] = prog.answerIndex;
-            if (prog.result) {
-              resultsCache[q.id] = prog.result;
-            }
-          }
-        });
 
         showQuiz();
       } catch (err) {
@@ -727,6 +717,9 @@
     prevBtn.onclick = () => {
       if (currentIdx > 0) {
         currentIdx--;
+        const q = quizQuestions[currentIdx];
+        delete userChoices[q.id];
+        delete resultsCache[q.id];
         renderCurrentQuestion();
       }
     };
@@ -734,6 +727,9 @@
     nextBtn.onclick = () => {
       if (currentIdx < quizQuestions.length - 1) {
         currentIdx++;
+        const q = quizQuestions[currentIdx];
+        delete userChoices[q.id];
+        delete resultsCache[q.id];
         renderCurrentQuestion();
       } else {
         if (confirm('Quiz completato! Tornare al menu?')) {
