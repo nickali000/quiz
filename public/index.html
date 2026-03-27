@@ -263,6 +263,21 @@
 
       .msg-success { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
       .msg-error { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error); }
+      .msg-info { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid #fbbf24; }
+
+      .btn-set-correct {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+      }
+      .btn-set-correct:hover {
+        background: linear-gradient(135deg, #d97706, #b45309);
+        transform: translateY(-1px);
+      }
+
+      .answer-option.set-correct {
+        border-color: #fbbf24;
+        background: rgba(251, 191, 36, 0.12);
+      }
 
       /* Transitions */
       .fade-in { animation: fadeIn 0.4s ease-out; }
@@ -336,7 +351,8 @@
           <button id="prev-btn" class="btn btn-secondary">
             &larr; Indietro
           </button>
-          <div style="display: flex; gap: 0.5rem;">
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+            <button id="set-correct-btn" class="btn btn-set-correct" title="Imposta la risposta selezionata come corretta (salva permanentemente)">✎ Imposta Corretta</button>
             <button id="check-btn" class="btn btn-primary">Verifica</button>
             <button id="next-btn" class="btn btn-primary">
               Avanti &rarr;
@@ -367,6 +383,7 @@
       const prevBtn = document.getElementById('prev-btn');
       const nextBtn = document.getElementById('next-btn');
       const checkBtn = document.getElementById('check-btn');
+      const setCorrectBtn = document.getElementById('set-correct-btn');
       const progressText = document.getElementById('progress-text');
       const progressFill = document.getElementById('progress-fill');
       const resultMsg = document.getElementById('result-msg');
@@ -428,6 +445,9 @@
       };
 
       function showQuiz() {
+        const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
+        setCorrectBtn.hidden = (mode !== 'sequential');
+        
         setupScreen.hidden = true;
         quizScreen.hidden = false;
         renderCurrentQuestion();
@@ -537,7 +557,11 @@
 
       function showResultMessage(res) {
         resultMsg.style.display = 'block';
-        if (res.isCorrect) {
+        resultMsg.hidden = false;
+        if (res._setCorrect) {
+          resultMsg.className = 'msg-info';
+          resultMsg.textContent = res.message || 'Risposta corretta impostata.';
+        } else if (res.isCorrect) {
           resultMsg.className = 'msg-success';
           resultMsg.textContent = 'Esatto! Ben fatto.';
         } else {
@@ -547,6 +571,48 @@
             : 'Sbagliato.';
         }
       }
+
+      // SET CORRECT ANSWER
+      async function setCorrectAnswer() {
+        const q = quizQuestions[currentIdx];
+        const selectedIdx = userChoices[q.id];
+
+        if (selectedIdx === undefined) {
+          alert('Seleziona prima una risposta da impostare come corretta.');
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/question/set-correct', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              questionId: q.id,
+              answerIndex: selectedIdx
+            })
+          });
+
+          const result = await res.json();
+          if (!res.ok) {
+            alert('Errore: ' + (result.error || 'Errore sconosciuto'));
+            return;
+          }
+
+          // Update local question state
+          q.has_correct_answer = true;
+
+          // Clear any old check result and store a "set" marker so UI updates
+          delete resultsCache[q.id];
+
+          result._setCorrect = true;
+          showResultMessage(result);
+          renderCurrentQuestion();
+        } catch (err) {
+          alert('Errore salvataggio: ' + err.message);
+        }
+      }
+
+      setCorrectBtn.onclick = setCorrectAnswer;
 
       // 4. NAVIGATION
       function updateProgress() {
