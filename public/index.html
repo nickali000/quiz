@@ -63,6 +63,46 @@
       gap: 1.5rem;
     }
 
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .subject-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .subject-item:hover,
+    .subject-item.active {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.08);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+    }
+
+    .subject-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .subject-name {
+      font-weight: 700;
+    }
+
+    .subject-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
     .chapter-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -94,6 +134,16 @@
       display: flex;
       gap: 1rem;
       justify-content: center;
+    }
+
+    .selection-tools {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .text-muted {
+      color: var(--text-muted);
     }
 
     .btn {
@@ -328,6 +378,13 @@
     <!-- SETUP SCREEN -->
     <div id="setup-screen">
       <div class="setup-section">
+        <h3>Seleziona Materia</h3>
+        <div id="subject-list" class="subject-grid">
+          <p class="text-muted">Caricamento materie...</p>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 0;">
+
         <h3>Seleziona Capitoli (Pagine)</h3>
         <div id="chapter-list" class="chapter-grid">
           <p class="text-muted">Caricamento capitoli...</p>
@@ -398,6 +455,8 @@
 
   <script>
     // STATE
+    let allSubjects = [];
+    let selectedSubjectId = null;
     let allCapitoli = [];
     let quizQuestions = [];
     let currentIdx = 0;
@@ -409,6 +468,7 @@
     // UI ELEMENTS
     const setupScreen = document.getElementById('setup-screen');
     const quizScreen = document.getElementById('quiz-screen');
+    const subjectList = document.getElementById('subject-list');
     const chapterList = document.getElementById('chapter-list');
     const startBtn = document.getElementById('start-btn');
     const qText = document.getElementById('q-text');
@@ -426,47 +486,130 @@
     // 1. INITIALIZATION
     async function init() {
       try {
-        // Carica capitoli
-        const resChapters = await fetch('/api/chapters');
-        allCapitoli = await resChapters.json();
-        renderChapters();
+        const resSubjects = await fetch('/api/subjects');
+        allSubjects = await resSubjects.json();
 
         // Carica progressi dal server
         const resProgress = await fetch('/api/progress');
         serverProgress = await resProgress.json();
 
-        // Carica impostazioni locali per i capitoli (per comodità)
         loadLocalSettings();
       } catch (err) {
+        subjectList.innerHTML = `<p style="color:red">Errore caricamento: ${err.message}</p>`;
         chapterList.innerHTML = `<p style="color:red">Errore caricamento: ${err.message}</p>`;
       }
     }
 
-    function loadLocalSettings() {
-      const savedChaps = localStorage.getItem('quiz_selected_chapters');
-      if (savedChaps) {
+    function getCurrentSubject() {
+      return allSubjects.find(subject => subject.id === selectedSubjectId) || null;
+    }
+
+    function getSavedChapterSelections() {
+      const saved = localStorage.getItem('quiz_selected_chapters_by_subject');
+      if (saved) {
         try {
-          const chaps = JSON.parse(savedChaps);
-          document.querySelectorAll('input[name="chapter"]').forEach(cb => {
-            if (chaps.includes(Number(cb.value))) cb.checked = true;
-          });
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            return parsed;
+          }
         } catch (e) { }
       }
+
+      const legacy = localStorage.getItem('quiz_selected_chapters');
+      if (legacy && selectedSubjectId) {
+        try {
+          const parsed = JSON.parse(legacy);
+          if (Array.isArray(parsed)) {
+            return { [selectedSubjectId]: parsed };
+          }
+        } catch (e) { }
+      }
+
+      return {};
+    }
+
+    function loadLocalSettings() {
+      const savedSubject = localStorage.getItem('quiz_selected_subject');
+      selectedSubjectId = allSubjects.some(subject => subject.id === savedSubject)
+        ? savedSubject
+        : (allSubjects[0]?.id || null);
+
       const savedMode = localStorage.getItem('quiz_nav_mode');
       if (savedMode) {
         const radio = document.querySelector(`input[name="navigation-mode"][value="${savedMode}"]`);
         if (radio) radio.checked = true;
       }
+
+      renderSubjects();
+      syncCurrentSubjectChapters();
+      applySavedChapterSelection();
     }
 
     function saveLocalSettings() {
       const selected = Array.from(document.querySelectorAll('input[name="chapter"]:checked')).map(cb => Number(cb.value));
       const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
-      localStorage.setItem('quiz_selected_chapters', JSON.stringify(selected));
+      const chapterSelections = getSavedChapterSelections();
+      if (selectedSubjectId) {
+        chapterSelections[selectedSubjectId] = selected;
+        localStorage.setItem('quiz_selected_subject', selectedSubjectId);
+      }
+      localStorage.setItem('quiz_selected_chapters_by_subject', JSON.stringify(chapterSelections));
+      localStorage.removeItem('quiz_selected_chapters');
       localStorage.setItem('quiz_nav_mode', mode);
     }
 
+    function renderSubjects() {
+      if (allSubjects.length === 0) {
+        subjectList.innerHTML = '<p class="text-muted">Nessuna materia disponibile.</p>';
+        return;
+      }
+
+      subjectList.innerHTML = allSubjects.map(subject => `
+          <label class="subject-item ${subject.id === selectedSubjectId ? 'active' : ''}">
+            <input type="radio" name="subject" value="${subject.id}" ${subject.id === selectedSubjectId ? 'checked' : ''}>
+            <div class="subject-copy">
+              <span class="subject-name">${subject.name}</span>
+              <span class="subject-meta">${subject.questionCount} domande valide • ${subject.chapters.length} pagine</span>
+            </div>
+          </label>
+        `).join('');
+
+      document.querySelectorAll('input[name="subject"]').forEach(radio => {
+        radio.addEventListener('change', (event) => handleSubjectChange(event.target.value));
+      });
+    }
+
+    function syncCurrentSubjectChapters() {
+      const subject = getCurrentSubject();
+      allCapitoli = subject ? subject.chapters : [];
+      renderChapters();
+    }
+
+    function applySavedChapterSelection() {
+      const savedSelections = getSavedChapterSelections();
+      const selectedChapters = Array.isArray(savedSelections[selectedSubjectId])
+        ? savedSelections[selectedSubjectId].map(Number)
+        : [];
+
+      document.querySelectorAll('input[name="chapter"]').forEach(cb => {
+        cb.checked = selectedChapters.includes(Number(cb.value));
+      });
+    }
+
+    function handleSubjectChange(subjectId) {
+      selectedSubjectId = subjectId;
+      localStorage.setItem('quiz_selected_subject', selectedSubjectId);
+      renderSubjects();
+      syncCurrentSubjectChapters();
+      applySavedChapterSelection();
+    }
+
     function renderChapters() {
+      if (!selectedSubjectId) {
+        chapterList.innerHTML = '<p class="text-muted">Seleziona una materia per vedere le pagine disponibili.</p>';
+        return;
+      }
+
       chapterList.innerHTML = allCapitoli.map(chap => `
           <label class="chapter-item">
             <input type="checkbox" name="chapter" value="${chap}"> Pagina ${chap}
@@ -480,8 +623,14 @@
 
     // 2. QUIZ START
     startBtn.onclick = async () => {
+      const subjectId = selectedSubjectId;
       const selected = Array.from(document.querySelectorAll('input[name="chapter"]:checked')).map(cb => Number(cb.value));
       const mode = document.querySelector('input[name="navigation-mode"]:checked').value;
+
+      if (!subjectId) {
+        alert('Seleziona una materia!');
+        return;
+      }
 
       if (selected.length === 0) {
         alert('Seleziona almeno un capitolo!');
@@ -494,7 +643,7 @@
         const res = await fetch('/api/questions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chapters: selected })
+          body: JSON.stringify({ subjectId, chapters: selected })
         });
 
         quizQuestions = await res.json();
@@ -543,7 +692,7 @@
         statusTag = " <span style='color:var(--success); font-size: 0.75rem; font-weight: bold; background: rgba(16,185,129,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 8px;'>\u2714 SALVATA</span>";
       }
 
-      qMeta.innerHTML = `Pagina ${q.pagina} - Domanda ${q.numero}${statusTag}`;
+      qMeta.innerHTML = `${q.materia} · Pagina ${q.pagina} - Domanda ${q.numero}${statusTag}`;
       qText.textContent = q.testo;
       if (q.immagine_url) {
         qImage.src = q.immagine_url;

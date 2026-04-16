@@ -7,6 +7,7 @@ const PORT = Number(process.env.PORT) || 1111;
 
 const QUIZ_FILE = path.join(__dirname, "quiz_estratti.json");
 const PROGRESS_FILE = path.join(__dirname, "user_progress.json");
+const DEFAULT_SUBJECT_NAME = "Scienza degli alimenti";
 
 const IMAGES_DIR = path.join(__dirname, "immagini_quiz");
 
@@ -32,10 +33,29 @@ function resolveCorrectAnswerIndex(rawQuestion, answers) {
   return null;
 }
 
+function slugifySubjectName(name) {
+  return String(name)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "materia";
+}
+
+function resolveSubjectName(rawQuestion) {
+  if (typeof rawQuestion.materia === "string" && rawQuestion.materia.trim() !== "") {
+    return rawQuestion.materia.trim();
+  }
+
+  return DEFAULT_SUBJECT_NAME;
+}
+
 function normalizeQuestion(rawQuestion, index) {
   const answers = Array.isArray(rawQuestion.risposte)
     ? rawQuestion.risposte.filter((answer) => typeof answer === "string")
     : [];
+  const subjectName = resolveSubjectName(rawQuestion);
+  const subjectId = slugifySubjectName(subjectName);
 
   const imagePath =
     typeof rawQuestion.immagine_path === "string" && rawQuestion.immagine_path.trim() !== ""
@@ -51,6 +71,8 @@ function normalizeQuestion(rawQuestion, index) {
     pagina: rawQuestion.pagina,
     testo: rawQuestion.testo,
     risposte: answers,
+    materia: subjectName,
+    materia_id: subjectId,
     immagine_path: imagePath,
     correctAnswerIndex
   };
@@ -63,6 +85,8 @@ function toPublicQuestion(question) {
     pagina: question.pagina,
     testo: question.testo,
     risposte: question.risposte,
+    materia: question.materia,
+    materia_id: question.materia_id,
     immagine_url: question.immagine_path ? `/${question.immagine_path}` : null,
     has_correct_answer: Number.isInteger(question.correctAnswerIndex)
   };
@@ -88,10 +112,39 @@ function loadStore() {
     throw new Error("Nessuna domanda valida trovata nel file quiz_estratti.json.");
   }
 
+  const subjectsMap = new Map();
+  normalized.forEach((question) => {
+    if (!subjectsMap.has(question.materia_id)) {
+      subjectsMap.set(question.materia_id, {
+        id: question.materia_id,
+        name: question.materia,
+        chapters: new Set(),
+        questionCount: 0
+      });
+    }
+
+    const subject = subjectsMap.get(question.materia_id);
+    if (Number.isInteger(question.pagina)) {
+      subject.chapters.add(question.pagina);
+    }
+    subject.questionCount += 1;
+  });
+
+  const subjects = [...subjectsMap.values()]
+    .map((subject) => ({
+      id: subject.id,
+      name: subject.name,
+      chapters: [...subject.chapters].sort((a, b) => a - b),
+      questionCount: subject.questionCount
+    }))
+    .sort((left, right) => left.name.localeCompare(right.name, "it"));
+
   return {
     rawQuestions: parsed,
     questions: normalized,
-    questionsById: new Map(normalized.map((question) => [question.id, question]))
+    questionsById: new Map(normalized.map((question) => [question.id, question])),
+    subjects,
+    subjectsById: new Map(subjects.map((subject) => [subject.id, subject]))
   };
 }
 
@@ -132,8 +185,17 @@ function readSelectedIndex(question, answerIndex, answerText) {
   return { selectedIndex, isValidChoice };
 }
 
+app.get("/api/subjects", (_req, res) => {
+  res.json(store.subjects);
+});
+
 app.get("/api/chapters", (_req, res) => {
-  const chapters = [...new Set(store.questions.map((q) => q.pagina))].sort((a, b) => a - b);
+  const { subjectId } = _req.query || {};
+  const selectedQuestions =
+    typeof subjectId === "string" && store.subjectsById.has(subjectId)
+      ? store.questions.filter((q) => q.materia_id === subjectId)
+      : store.questions;
+  const chapters = [...new Set(selectedQuestions.map((q) => q.pagina))].sort((a, b) => a - b);
   res.json(chapters);
 });
 
@@ -142,13 +204,17 @@ app.get("/api/progress", (_req, res) => {
 });
 
 app.post("/api/questions", (req, res) => {
-  const { chapters } = req.body || {};
+  const { subjectId, chapters } = req.body || {};
+  if (typeof subjectId !== "string" || !store.subjectsById.has(subjectId)) {
+    return res.status(400).json({ error: "Seleziona una materia valida." });
+  }
+
   if (!Array.isArray(chapters) || chapters.length === 0) {
     return res.status(400).json({ error: "Seleziona almeno un capitolo." });
   }
 
   const selectedQuestions = store.questions
-    .filter((q) => chapters.includes(q.pagina))
+    .filter((q) => q.materia_id === subjectId && chapters.includes(q.pagina))
     .map((q) => toPublicQuestion(q));
 
   res.json(selectedQuestions);
@@ -283,7 +349,8 @@ app.get("/api/health", (_req, res) => {
   res.json({
     status: "ok",
     questions: store.questions.length,
-    with_correct_answer: withCorrectAnswer
+    with_correct_answer: withCorrectAnswer,
+    subjects: store.subjects.length
   });
 });
 
