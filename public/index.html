@@ -142,6 +142,75 @@
       flex-wrap: wrap;
     }
 
+    .import-card {
+      padding: 1.25rem;
+      background: rgba(15, 23, 42, 0.48);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .import-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      padding: 0.85rem 0.95rem;
+      font: inherit;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+    }
+
+    .input[type="file"] {
+      padding: 0.65rem 0.8rem;
+    }
+
+    .import-status {
+      padding: 0.95rem 1rem;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .import-status.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #a7f3d0;
+    }
+
+    .import-status.error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fecaca;
+    }
+
+    .import-status.info {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      color: #bfdbfe;
+    }
+
     .text-muted {
       color: var(--text-muted);
     }
@@ -385,6 +454,35 @@
 
         <hr style="border: 0; border-top: 1px solid var(--border); margin: 0;">
 
+        <div class="import-card">
+          <div>
+            <h3 style="margin: 0 0 0.35rem 0;">Importa Nuova Materia</h3>
+            <p class="text-muted" style="margin: 0;">
+              Inserisci il titolo della materia, carica il PDF e il sistema estrarrà quiz, immagini e JSON in automatico.
+            </p>
+          </div>
+
+          <div class="import-grid">
+            <label class="field">
+              Titolo Materia
+              <input id="import-subject-name" class="input" type="text" placeholder="Es. Microbiologia" maxlength="120">
+            </label>
+
+            <label class="field">
+              PDF Del Quiz
+              <input id="import-pdf-file" class="input" type="file" accept="application/pdf">
+            </label>
+          </div>
+
+          <div class="selection-tools">
+            <button id="import-btn" class="btn btn-secondary" type="button">Importa PDF</button>
+          </div>
+
+          <div id="import-status" class="import-status info" hidden></div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 0;">
+
         <h3>Seleziona Capitoli (Pagine)</h3>
         <div id="chapter-list" class="chapter-grid">
           <p class="text-muted">Caricamento capitoli...</p>
@@ -469,6 +567,10 @@
     const setupScreen = document.getElementById('setup-screen');
     const quizScreen = document.getElementById('quiz-screen');
     const subjectList = document.getElementById('subject-list');
+    const importSubjectNameInput = document.getElementById('import-subject-name');
+    const importPdfFileInput = document.getElementById('import-pdf-file');
+    const importBtn = document.getElementById('import-btn');
+    const importStatus = document.getElementById('import-status');
     const chapterList = document.getElementById('chapter-list');
     const startBtn = document.getElementById('start-btn');
     const qText = document.getElementById('q-text');
@@ -486,14 +588,12 @@
     // 1. INITIALIZATION
     async function init() {
       try {
-        const resSubjects = await fetch('/api/subjects');
-        allSubjects = await resSubjects.json();
-
         // Carica progressi dal server
         const resProgress = await fetch('/api/progress');
         serverProgress = await resProgress.json();
 
-        loadLocalSettings();
+        applySavedMode();
+        await reloadSubjects();
       } catch (err) {
         subjectList.innerHTML = `<p style="color:red">Errore caricamento: ${err.message}</p>`;
         chapterList.innerHTML = `<p style="color:red">Errore caricamento: ${err.message}</p>`;
@@ -528,18 +628,31 @@
       return {};
     }
 
-    function loadLocalSettings() {
-      const savedSubject = localStorage.getItem('quiz_selected_subject');
-      selectedSubjectId = allSubjects.some(subject => subject.id === savedSubject)
-        ? savedSubject
-        : (allSubjects[0]?.id || null);
-
+    function applySavedMode() {
       const savedMode = localStorage.getItem('quiz_nav_mode');
       if (savedMode) {
         const radio = document.querySelector(`input[name="navigation-mode"][value="${savedMode}"]`);
         if (radio) radio.checked = true;
       }
+    }
 
+    function restoreSelectedSubject(preferredSubjectId = null) {
+      const savedSubject = localStorage.getItem('quiz_selected_subject');
+      if (preferredSubjectId && allSubjects.some(subject => subject.id === preferredSubjectId)) {
+        selectedSubjectId = preferredSubjectId;
+        return;
+      }
+      if (allSubjects.some(subject => subject.id === savedSubject)) {
+        selectedSubjectId = savedSubject;
+        return;
+      }
+      selectedSubjectId = allSubjects[0]?.id || null;
+    }
+
+    async function reloadSubjects(preferredSubjectId = null) {
+      const resSubjects = await fetch('/api/subjects');
+      allSubjects = await resSubjects.json();
+      restoreSelectedSubject(preferredSubjectId);
       renderSubjects();
       syncCurrentSubjectChapters();
       applySavedChapterSelection();
@@ -602,6 +715,68 @@
       renderSubjects();
       syncCurrentSubjectChapters();
       applySavedChapterSelection();
+    }
+
+    function setImportMessage(message, tone = 'info') {
+      importStatus.textContent = message;
+      importStatus.className = `import-status ${tone}`;
+      importStatus.hidden = false;
+    }
+
+    async function importSubjectPdf() {
+      const subjectName = importSubjectNameInput.value.trim();
+      const pdfFile = importPdfFileInput.files[0];
+
+      if (!subjectName) {
+        setImportMessage('Inserisci prima il titolo della materia.', 'error');
+        return;
+      }
+
+      if (!pdfFile) {
+        setImportMessage('Seleziona un PDF da importare.', 'error');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('subjectName', subjectName);
+      formData.append('pdf', pdfFile);
+
+      importBtn.disabled = true;
+      setImportMessage('Import in corso: estraggo domande, immagini e nuova materia...', 'info');
+
+      try {
+        const res = await fetch('/api/subjects/import', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await res.json();
+        if (!res.ok) {
+          throw new Error(result.error || 'Import non riuscito.');
+        }
+
+        const importedSubject = result.subject;
+        if (importedSubject?.id && Array.isArray(importedSubject.chapters)) {
+          const chapterSelections = getSavedChapterSelections();
+          chapterSelections[importedSubject.id] = importedSubject.chapters;
+          localStorage.setItem('quiz_selected_subject', importedSubject.id);
+          localStorage.setItem('quiz_selected_chapters_by_subject', JSON.stringify(chapterSelections));
+        }
+
+        await reloadSubjects(importedSubject?.id || null);
+
+        importSubjectNameInput.value = '';
+        importPdfFileInput.value = '';
+
+        setImportMessage(
+          `Materia importata: ${result.stats.validQuestions} domande valide, ${result.stats.savedImages} immagini salvate, ${result.stats.repairedQuestions} domande riparate automaticamente.`,
+          'success'
+        );
+      } catch (err) {
+        setImportMessage(`Errore durante l'import: ${err.message}`, 'error');
+      } finally {
+        importBtn.disabled = false;
+      }
     }
 
     function renderChapters() {
@@ -889,6 +1064,7 @@
     };
 
     checkBtn.onclick = verifyAnswer;
+    importBtn.onclick = importSubjectPdf;
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {

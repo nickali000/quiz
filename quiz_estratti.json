@@ -282,15 +282,14 @@
         "testo": "La seguente definizione \"I Livelli di assunzione raccomandati di energia e nutrienti (LARN)) si riferiscono alla quantità di calorie e proteine, grassi, zuccheri, vitamine, sali minerali consigliati per favorire i bisogni nutrizionali della popolazione italiana, suddivisa in diversi gruppi (età, sesso, gravidanza, allattamento)\".",
         "risposte": [
             "No, sono riferiti solo agli adulti",
-            "No. I Livelli di assunzione raccomandati sono riferiti solo a vitamine e minerali consigliati per favorire i bisogni nutrizionali della popolazione italiana, suddivisa in diversi",
-            "gruppi (età, sesso, gravidanza, allattamento)",
+            "No. I Livelli di assunzione raccomandati sono riferiti solo a vitamine e minerali consigliati per favorire i bisogni nutrizionali della popolazione italiana, suddivisa in diversi gruppi (età, sesso, gravidanza, allattamento)",
             "Si, è vera",
             "No, sono riferiti solo ad alcune tipologie di persone"
         ],
         "immagine_path": null,
         "y0_domanda": 366.9220886230469,
         "pagina": 7,
-        "risposta_corretta_index": 3,
+        "risposta_corretta_index": 2,
         "risposta_corretta": "Si, è vera"
     },
     {
@@ -599,8 +598,7 @@
         "testo": "Un'anti-vitamina",
         "risposte": [
             "è presente in tutti gli alimenti",
-            "è una sostanza chimica che modifica la struttura della vitamina che, distruggono o riducono gli effetti di un vitamina modificando la molecola o formando un complesso",
-            "con essa.",
+            "è una sostanza chimica che modifica la struttura della vitamina che, distruggono o riducono gli effetti di un vitamina modificando la molecola o formando un complesso con essa.",
             "aiuta a prevenire la carenza di vitamine",
             "è una sostanza che aumenta la biodisponibilità delle vitamine"
         ],
@@ -608,7 +606,7 @@
         "y0_domanda": 187.17626953125,
         "pagina": 11,
         "risposta_corretta_index": 1,
-        "risposta_corretta": "è una sostanza chimica che modifica la struttura della vitamina che, distruggono o riducono gli effetti di un vitamina modificando la molecola o formando un complesso"
+        "risposta_corretta": "è una sostanza chimica che modifica la struttura della vitamina che, distruggono o riducono gli effetti di un vitamina modificando la molecola o formando un complesso con essa."
     },
     {
         "numero": "16",
@@ -961,32 +959,29 @@
         "risposte": [
             "sono destinati alla maggior parte delle persone",
             "sono destinati a particolari gruppi etnici",
-            "sono finalizzati a far fronte alle esigenze nutrizionali particolari di soggetti con turbe del processo di assorbimento intestinale o del metabolismo o comunque in condizioni",
-            "fisiologiche particolar",
+            "sono finalizzati a far fronte alle esigenze nutrizionali particolari di soggetti con turbe del processo di assorbimento intestinale o del metabolismo o comunque in condizioni fisiologiche particolar",
             "sono finalizzati a soggetti sani"
         ],
         "immagine_path": null,
         "y0_domanda": 297.50921630859375,
         "pagina": 16,
         "risposta_corretta_index": 2,
-        "risposta_corretta": "sono finalizzati a far fronte alle esigenze nutrizionali particolari di soggetti con turbe del processo di assorbimento intestinale o del metabolismo o comunque in condizioni"
+        "risposta_corretta": "sono finalizzati a far fronte alle esigenze nutrizionali particolari di soggetti con turbe del processo di assorbimento intestinale o del metabolismo o comunque in condizioni fisiologiche particolar"
     },
     {
         "numero": "04",
         "testo": "Un alimento è definito funzionale",
         "risposte": [
-            "se non ha proprietà nutrizionali ma contribuisce positivamente su uno o più funzioni fisiologiche, contribuendo a migliorare lo stato di salute o a ridurre il rischio di",
-            "insorgenza delle malattie correlate al regime alimentare",
-            "se oltre alle sue proprietà nutrizionali è scientificamente dimostrata la sua capacità di influire positivamente su uno o più funzioni fisiologiche, contribuendo a migliorare lo",
-            "stato di salute o a ridurre il rischio di insorgenza delle malattie correlate al regime alimentare.",
+            "se non ha proprietà nutrizionali ma contribuisce positivamente su uno o più funzioni fisiologiche, contribuendo a migliorare lo stato di salute o a ridurre il rischio di insorgenza delle malattie correlate al regime alimentare",
+            "se oltre alle sue proprietà nutrizionali è scientificamente dimostrata la sua capacità di influire positivamente su uno o più funzioni fisiologiche, contribuendo a migliorare lo stato di salute o a ridurre il rischio di insorgenza delle malattie correlate al regime alimentare.",
             "se è inserito nell'elenco dei medicinali speciali",
             "se oltre alle sue proprietà nutrizionali cura le malattie correlate al regime alimentare"
         ],
         "immagine_path": null,
         "y0_domanda": 395.48211669921875,
         "pagina": 16,
-        "risposta_corretta_index": 2,
-        "risposta_corretta": "se oltre alle sue proprietà nutrizionali è scientificamente dimostrata la sua capacità di influire positivamente su uno o più funzioni fisiologiche, contribuendo a migliorare lo"
+        "risposta_corretta_index": 1,
+        "risposta_corretta": "se oltre alle sue proprietà nutrizionali è scientificamente dimostrata la sua capacità di influire positivamente su uno o più funzioni fisiologiche, contribuendo a migliorare lo stato di salute o a ridurre il rischio di insorgenza delle malattie correlate al regime alimentare."
     },
     {
         "numero": "05",
@@ -1242,37 +1237,31 @@
         "numero": "01",
         "testo": "l' adulterazione di un prodotto alimentare consiste",
         "risposte": [
-            "nel formare ex novo un alimento con l'apparenza della genuinità di prodotto alimentare, ma con sostanze diverse, per qualità o quantità, da quelle che normalmente",
-            "concorrono a formarlo",
+            "nel formare ex novo un alimento con l'apparenza della genuinità di prodotto alimentare, ma con sostanze diverse, per qualità o quantità, da quelle che normalmente concorrono a formarlo",
             "nell'aggiungere all'alimento sostanze estranee alla sua composizione con lo scopo di migliorarne l'aspetto o di coprirne difetti o di simularne la genuinità",
-            "in tutte le operazioni che alterano la struttura originale di un alimento mediante sostituzione di elementi propri dell'alimento con altri estranei, ovvero con la sottrazione di",
-            "elementi propri dell'alimento, o ancora, con l'aumento della quantità proporzionale di uno o più dei suoi componenti.",
-            "nelle modifiche delle caratteristiche chimico-fisiche e/o organolettiche di un alimento, dovute a processi degenerativi spontanei, determinati da errate modalità di",
-            "conservazione o prolungamento eccessivo dei tempi di conservazione"
+            "in tutte le operazioni che alterano la struttura originale di un alimento mediante sostituzione di elementi propri dell'alimento con altri estranei, ovvero con la sottrazione di elementi propri dell'alimento, o ancora, con l'aumento della quantità proporzionale di uno o più dei suoi componenti.",
+            "nelle modifiche delle caratteristiche chimico-fisiche e/o organolettiche di un alimento, dovute a processi degenerativi spontanei, determinati da errate modalità di conservazione o prolungamento eccessivo dei tempi di conservazione"
         ],
         "immagine_path": null,
         "y0_domanda": 117.76336669921875,
         "pagina": 20,
-        "risposta_corretta_index": 3,
-        "risposta_corretta": "in tutte le operazioni che alterano la struttura originale di un alimento mediante sostituzione di elementi propri dell'alimento con altri estranei, ovvero con la sottrazione di"
+        "risposta_corretta_index": 2,
+        "risposta_corretta": "in tutte le operazioni che alterano la struttura originale di un alimento mediante sostituzione di elementi propri dell'alimento con altri estranei, ovvero con la sottrazione di elementi propri dell'alimento, o ancora, con l'aumento della quantità proporzionale di uno o più dei suoi componenti."
     },
     {
         "numero": "02",
         "testo": "la contraffazione di un prodotto alimentare consiste",
         "risposte": [
             "nell'aggiungere all'alimento sostanze estranee alla sua composizione con lo scopo di migliorarne l'aspetto o di coprirne difetti o di simularne la genuinità",
-            "in tutte le operazioni che alterano la struttura originale di un alimento mediante sostituzione di elementi propri dell'alimento con altri estranei, ovvero con la sottrazione di",
-            "elementi propri dell'alimento, o ancora, con l'aumento della quantità proporzionale di uno o più dei suoi componenti.",
-            "nelle modifiche delle caratteristiche chimico-fisiche e/o organolettiche di un alimento, dovute a processi degenerativi spontanei, determinati da errate modalità di",
-            "conservazione o prolungamento eccessivo dei tempi di conservazione",
-            "nel formare ex novo un alimento con l'apparenza della genuinità di prodotto alimentare, ma con sostanze diverse, per qualità o quantità, da quelle che normalmente",
-            "concorrono a formarlo"
+            "in tutte le operazioni che alterano la struttura originale di un alimento mediante sostituzione di elementi propri dell'alimento con altri estranei, ovvero con la sottrazione di elementi propri dell'alimento, o ancora, con l'aumento della quantità proporzionale di uno o più dei suoi componenti.",
+            "nelle modifiche delle caratteristiche chimico-fisiche e/o organolettiche di un alimento, dovute a processi degenerativi spontanei, determinati da errate modalità di conservazione o prolungamento eccessivo dei tempi di conservazione",
+            "nel formare ex novo un alimento con l'apparenza della genuinità di prodotto alimentare, ma con sostanze diverse, per qualità o quantità, da quelle che normalmente concorrono a formarlo"
         ],
         "immagine_path": null,
         "y0_domanda": 231.936279296875,
         "pagina": 20,
-        "risposta_corretta_index": 5,
-        "risposta_corretta": "nel formare ex novo un alimento con l'apparenza della genuinità di prodotto alimentare, ma con sostanze diverse, per qualità o quantità, da quelle che normalmente"
+        "risposta_corretta_index": 3,
+        "risposta_corretta": "nel formare ex novo un alimento con l'apparenza della genuinità di prodotto alimentare, ma con sostanze diverse, per qualità o quantità, da quelle che normalmente concorrono a formarlo"
     },
     {
         "numero": "03",
@@ -1280,15 +1269,14 @@
         "risposte": [
             "rendono potenzialmente o sicuramente nocive le derrate alimentari",
             "si distinguono dalle sofisticazioni alimentari",
-            "comprendono tutte le azioni fraudolente sugli alimenti o sulle loro confezioni che, pur non determinando concreto o immediato nocumento per la salute pubblica,",
-            "favoriscono illeciti profitti a danno del consumatore",
+            "comprendono tutte le azioni fraudolente sugli alimenti o sulle loro confezioni che, pur non determinando concreto o immediato nocumento per la salute pubblica, favoriscono illeciti profitti a danno del consumatore",
             "procurano un danno alla salute dei cittadini"
         ],
         "immagine_path": null,
         "y0_domanda": 346.10919189453125,
         "pagina": 20,
         "risposta_corretta_index": 2,
-        "risposta_corretta": "comprendono tutte le azioni fraudolente sugli alimenti o sulle loro confezioni che, pur non determinando concreto o immediato nocumento per la salute pubblica,"
+        "risposta_corretta": "comprendono tutte le azioni fraudolente sugli alimenti o sulle loro confezioni che, pur non determinando concreto o immediato nocumento per la salute pubblica, favoriscono illeciti profitti a danno del consumatore"
     },
     {
         "numero": "04",
@@ -1324,19 +1312,16 @@
         "numero": "06",
         "testo": "l'alterazione di un prodotto alimentare consiste",
         "risposte": [
-            "nel formare ex novo un alimento con l'apparenza della genuinità di prodotto alimentare, ma con sostanze diverse, per qualità o quantità, da quelle che normalmente",
-            "concorrono a formarlo",
+            "nel formare ex novo un alimento con l'apparenza della genuinità di prodotto alimentare, ma con sostanze diverse, per qualità o quantità, da quelle che normalmente concorrono a formarlo",
             "nell'aggiungere all'alimento sostanze estranee alla sua composizione con lo scopo di migliorarne l'aspetto o di coprirne difetti o di simularne la genuinità",
-            "nelle modifiche delle caratteristiche chimico-fisiche e/o organolettiche di un alimento, dovute a processi degenerativi spontanei, determinati da errate modalità di",
-            "conservazione o prolungamento eccessivo dei tempi di conservazione",
-            "in tutte le operazioni che alterano la struttura originale di un alimento mediante sostituzione di elementi propri dell'alimento con altri estranei, ovvero con la sottrazione di",
-            "elementi propri dell'alimento, o ancora, con l'aumento della quantità proporzionale di uno o più dei suoi componenti."
+            "nelle modifiche delle caratteristiche chimico-fisiche e/o organolettiche di un alimento, dovute a processi degenerativi spontanei, determinati da errate modalità di conservazione o prolungamento eccessivo dei tempi di conservazione",
+            "in tutte le operazioni che alterano la struttura originale di un alimento mediante sostituzione di elementi propri dell'alimento con altri estranei, ovvero con la sottrazione di elementi propri dell'alimento, o ancora, con l'aumento della quantità proporzionale di uno o più dei suoi componenti."
         ],
         "immagine_path": null,
         "y0_domanda": 623.8279418945312,
         "pagina": 20,
-        "risposta_corretta_index": 3,
-        "risposta_corretta": "nelle modifiche delle caratteristiche chimico-fisiche e/o organolettiche di un alimento, dovute a processi degenerativi spontanei, determinati da errate modalità di"
+        "risposta_corretta_index": 2,
+        "risposta_corretta": "nelle modifiche delle caratteristiche chimico-fisiche e/o organolettiche di un alimento, dovute a processi degenerativi spontanei, determinati da errate modalità di conservazione o prolungamento eccessivo dei tempi di conservazione"
     },
     {
         "numero": "07",
@@ -1628,8 +1613,7 @@
         "numero": "19",
         "testo": "La molecola d'acqua ha",
         "risposte": [
-            "ha geometria tetraedrica con l'atomo di ossigeno che occupa il centro del tetraedro mentre i due atomi di idrogeno e le coppie degli elettroni non condivisi dell'ossigeno",
-            "sono disposti ai vertici del tetraedro",
+            "ha geometria tetraedrica con l'atomo di ossigeno che occupa il centro del tetraedro mentre i due atomi di idrogeno e le coppie degli elettroni non condivisi dell'ossigeno sono disposti ai vertici del tetraedro",
             "ha geometria lineare con le coppie degli elettroni non condivisi dell'ossigeno sono disposti su piani opposti",
             "ha geometria spefica dovuta alle forze di repulzione degli elettroni non condivisi dell'ossigeno",
             "ha una geometria lineari"
@@ -1638,7 +1622,7 @@
         "y0_domanda": 97.3033447265625,
         "pagina": 24,
         "risposta_corretta_index": 0,
-        "risposta_corretta": "ha geometria tetraedrica con l'atomo di ossigeno che occupa il centro del tetraedro mentre i due atomi di idrogeno e le coppie degli elettroni non condivisi dell'ossigeno"
+        "risposta_corretta": "ha geometria tetraedrica con l'atomo di ossigeno che occupa il centro del tetraedro mentre i due atomi di idrogeno e le coppie degli elettroni non condivisi dell'ossigeno sono disposti ai vertici del tetraedro"
     },
     {
         "numero": "20",
@@ -3615,14 +3599,13 @@
             "sono carboidrati che non hanno potere riducente",
             "sono solo chetosi",
             "sono solo aldosi",
-            "vengono classificati in base al numero di atomi di carbonio presenti (triosi, tetrosi, pentosi, esosi e così via) e in base al fatto che il carbonile sia aldeidico (aldosi) o",
-            "chetonico (chetosi)."
+            "vengono classificati in base al numero di atomi di carbonio presenti (triosi, tetrosi, pentosi, esosi e così via) e in base al fatto che il carbonile sia aldeidico (aldosi) o chetonico (chetosi)."
         ],
         "immagine_path": null,
         "y0_domanda": 187.17626953125,
         "pagina": 55,
         "risposta_corretta_index": 3,
-        "risposta_corretta": "vengono classificati in base al numero di atomi di carbonio presenti (triosi, tetrosi, pentosi, esosi e così via) e in base al fatto che il carbonile sia aldeidico (aldosi) o"
+        "risposta_corretta": "vengono classificati in base al numero di atomi di carbonio presenti (triosi, tetrosi, pentosi, esosi e così via) e in base al fatto che il carbonile sia aldeidico (aldosi) o chetonico (chetosi)."
     },
     {
         "numero": "17",
@@ -4532,20 +4515,16 @@
         "numero": "02",
         "testo": "Le somiglianze e le differenze tra amilosio e cellulosa sono:",
         "risposte": [
-            "L'amilosio è un polimero lineare di unità di glucosio la cellulosa è un polimero ramificato di unità di glucosio. I collegamenti glicosidici tra le unità di glucosio",
-            "differiscono. I legami in amilosio sono legami α-1,6-glicosidici, mentre i legami in cellulosa sono legami β-1,4-glicosidici.",
-            "L'amilosio e la cellulosa sono entrambi polimeri lineari di unità di glucosio, ma i collegamenti glicosidici tra le unità di glucosio differiscono. I legami in amilosio sono",
-            "legami α-1,4-glicosidici, mentre i legami in cellulosa sono legami β-1,4-glicosidici.",
-            "L'amilosio è un polimero lineare di unità di glucosio la cellulosa è un polimero ramificato di unità di glucosio. I collegamenti glicosidici tra le unità di glucosio",
-            "differiscono. I legami in amilosio sono legami β-1,4 glicosidici, mentre i legami in cellulosa sono legami α-1,6-glicosidici.",
-            "L'amilosio e la cellulosa sono entrambi polimeri ramificari di unità di glucosio. I collegamenti glicosidici tra le unità di glucosio differiscono. I legami in amilosio sono",
-            "legami α-1,4 glicosidici, mentre i legami in cellulosa sono legami α-1,6-glicosidici."
+            "L'amilosio è un polimero lineare di unità di glucosio la cellulosa è un polimero ramificato di unità di glucosio. I collegamenti glicosidici tra le unità di glucosio differiscono. I legami in amilosio sono legami α-1,6-glicosidici, mentre i legami in cellulosa sono legami β-1,4-glicosidici.",
+            "L'amilosio e la cellulosa sono entrambi polimeri lineari di unità di glucosio, ma i collegamenti glicosidici tra le unità di glucosio differiscono. I legami in amilosio sono legami α-1,4-glicosidici, mentre i legami in cellulosa sono legami β-1,4-glicosidici.",
+            "L'amilosio è un polimero lineare di unità di glucosio la cellulosa è un polimero ramificato di unità di glucosio. I collegamenti glicosidici tra le unità di glucosio differiscono. I legami in amilosio sono legami β-1,4 glicosidici, mentre i legami in cellulosa sono legami α-1,6-glicosidici.",
+            "L'amilosio e la cellulosa sono entrambi polimeri ramificari di unità di glucosio. I collegamenti glicosidici tra le unità di glucosio differiscono. I legami in amilosio sono legami α-1,4 glicosidici, mentre i legami in cellulosa sono legami α-1,6-glicosidici."
         ],
         "immagine_path": null,
         "y0_domanda": 207.63629150390625,
         "pagina": 65,
-        "risposta_corretta_index": 2,
-        "risposta_corretta": "L'amilosio e la cellulosa sono entrambi polimeri lineari di unità di glucosio, ma i collegamenti glicosidici tra le unità di glucosio differiscono. I legami in amilosio sono"
+        "risposta_corretta_index": 1,
+        "risposta_corretta": "L'amilosio e la cellulosa sono entrambi polimeri lineari di unità di glucosio, ma i collegamenti glicosidici tra le unità di glucosio differiscono. I legami in amilosio sono legami α-1,4-glicosidici, mentre i legami in cellulosa sono legami β-1,4-glicosidici."
     },
     {
         "numero": "03",
@@ -4645,8 +4624,7 @@
             "è la un complesso di reazioni di imbrunimento enzimatico degli zuccheri",
             "è la un complesso di reazioni a carico di zuccheri in presenza di proteine e gruppi amminici",
             "è la un complesso di reazioni di imbrunimento non enzimatico degli zuccheri che produce composti aromatici e composti ad alto peso molecolare di colore marrone",
-            "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di",
-            "temperature elevate e in condizioni di bassa attività dell'acqua (aw)."
+            "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di temperature elevate e in condizioni di bassa attività dell'acqua (aw)."
         ],
         "immagine_path": null,
         "y0_domanda": 387.3821105957031,
@@ -4660,14 +4638,13 @@
         "risposte": [
             "la produzione di aromi caratteristici e dI pigmenti marroni dagli zuccheri mediante l'applicazione di calore in presenza di composti amminici.",
             "è la un complesso di reazioni di imbrunimento enzimatico degli zuccheri",
-            "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di",
-            "temperature elevate e in condizioni di bassa attività dell'acqua (aw).",
+            "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di temperature elevate e in condizioni di bassa attività dell'acqua (aw).",
             "la produzione di aromi caratteristici e dI pigmenti marroni dagli zuccheri mediante l'applicazione di calore in assenza di composti amminici."
         ],
         "immagine_path": null,
         "y0_domanda": 485.3550109863281,
         "pagina": 66,
-        "risposta_corretta_index": 4,
+        "risposta_corretta_index": 3,
         "risposta_corretta": "la produzione di aromi caratteristici e dI pigmenti marroni dagli zuccheri mediante l'applicazione di calore in assenza di composti amminici."
     },
     {
@@ -4789,17 +4766,15 @@
         "testo": "Per Reazione di Maillard si intende",
         "risposte": [
             "una serie complessa di fenomeni che avviene esponendo monosaccaridi puri a temperature elevate e in condizioni di bassa attività dell'acqua (aw).",
-            "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di",
-            "temperature elevate e in condizioni di bassa attività dell'acqua (aw).",
-            "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di",
-            "temperature elevate",
+            "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di temperature elevate e in condizioni di bassa attività dell'acqua (aw).",
+            "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di temperature elevate",
             "una serie complessa di fenomeni ossidativi che avviene in seguito all'impiego di temperature elevate e in condizioni di bassa attività dell'acqua (aw)."
         ],
         "immagine_path": null,
         "y0_domanda": 387.3821105957031,
         "pagina": 68,
         "risposta_corretta_index": 1,
-        "risposta_corretta": "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di"
+        "risposta_corretta": "una serie complessa di fenomeni che avviene in seguito all'interazione tra un gruppo carbonilico e gruppi amminici liberi in processi che prevedono l'impiego di temperature elevate e in condizioni di bassa attività dell'acqua (aw)."
     },
     {
         "numero": "05",
@@ -5503,44 +5478,38 @@
         "testo": "La DIGERIBILITÀ di una proteina",
         "risposte": [
             "Indica la qualità d'azoto introdotto con una determinata proteina e che è stato trattenuto per il mantenimento e per l'accrescimento",
-            "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche",
-            "dell'azoto con le feci",
+            "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche dell'azoto con le feci",
             "è un indice chimico che si misura come il rapporto tra l'azoto ingerito e quello trattenuto",
-            "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina",
-            "biologica di riferimento"
+            "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina biologica di riferimento"
         ],
         "immagine_path": null,
         "y0_domanda": 297.50921630859375,
         "pagina": 84,
         "risposta_corretta_index": 1,
-        "risposta_corretta": "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche"
+        "risposta_corretta": "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche dell'azoto con le feci"
     },
     {
         "numero": "04",
         "testo": "l' INDICE PROTEICO CHIMICO",
         "risposte": [
-            "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche",
-            "dell'azoto con le feci",
+            "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche dell'azoto con le feci",
             "Indica la qualità d'azoto introdotto con una determinata proteina e che è stato trattenuto per il mantenimento e per l'accrescimento",
             "è un indice chimico che si misura come il rapporto tra l'azoto ingerito e quello trattenuto",
-            "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina",
-            "biologica di riferimento"
+            "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina biologica di riferimento"
         ],
         "immagine_path": null,
         "y0_domanda": 403.58209228515625,
         "pagina": 84,
-        "risposta_corretta_index": 4,
-        "risposta_corretta": "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina"
+        "risposta_corretta_index": 3,
+        "risposta_corretta": "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina biologica di riferimento"
     },
     {
         "numero": "05",
         "testo": "Il VALORE BIOLOGICO di una Proteina",
         "risposte": [
             "Indica la qualità d'azoto introdotto con una determinata proteina e che è stato trattenuto per il mantenimento e per l'accrescimento",
-            "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina",
-            "biologica di riferimento",
-            "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche",
-            "dell'azoto con le feci",
+            "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina biologica di riferimento",
+            "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche dell'azoto con le feci",
             "è un indice chimico che si misura come il rapporto tra l'azoto ingerito e quello trattenuto"
         ],
         "immagine_path": null,
@@ -5554,11 +5523,9 @@
         "testo": "L'UTILIZZAZIONE PROTEICA NETTA",
         "risposte": [
             "è un indice chimico che si misura come il rapporto tra l'azoto ingerito e quello trattenuto",
-            "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche",
-            "dell'azoto con le feci",
+            "è un indice chimico che si misura come il rapporto tra la quantità di azoto proteico assorbito e la quantità d'azoto proteico ingerito, corretta per le perdite metaboliche dell'azoto con le feci",
             "Indica la qualità d'azoto introdotto con una determinata proteina e che è stato trattenuto per il mantenimento e per l'accrescimento",
-            "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina",
-            "biologica di riferimento"
+            "E' dato dal rapporto tra la quantità di un dato aminoacido in un grammo della proteina in esame e la quantità dello stesso aminoacido in un grammo di una proteina biologica di riferimento"
         ],
         "immagine_path": null,
         "y0_domanda": 615.7279052734375,
@@ -5723,8 +5690,7 @@
         "testo": "La DENATURAZIONE di una proteina è definita come",
         "risposte": [
             "il processo di folding proteico",
-            "ogni modifica della struttura secondaria, terziaria e/o quaternaria delle proteine, che non implichi la rottura dei legami peptidici, in cui cioè rimanga integra la struttura",
-            "primaria",
+            "ogni modifica della struttura secondaria, terziaria e/o quaternaria delle proteine, che non implichi la rottura dei legami peptidici, in cui cioè rimanga integra la struttura primaria",
             "la rottura dei legami peptidici di una proteina",
             "la modifica della sola struttura quaternaria delle proteine"
         ],
@@ -5732,7 +5698,7 @@
         "y0_domanda": 207.63629150390625,
         "pagina": 87,
         "risposta_corretta_index": 1,
-        "risposta_corretta": "ogni modifica della struttura secondaria, terziaria e/o quaternaria delle proteine, che non implichi la rottura dei legami peptidici, in cui cioè rimanga integra la struttura"
+        "risposta_corretta": "ogni modifica della struttura secondaria, terziaria e/o quaternaria delle proteine, che non implichi la rottura dei legami peptidici, in cui cioè rimanga integra la struttura primaria"
     },
     {
         "numero": "03",
@@ -5769,8 +5735,7 @@
         "testo": "tra le Proprietà funzionali delle proteine , le Proprietà di superficie",
         "risposte": [
             "dipendono esclusivamente dagli amminoacidi carichi esposti sulla superficie della proteina allo stato nativo",
-            "consentono di stabilizzare schiume ed emulsioni attraverso la costituzione di uno strato molecolare resistente ed elastico che si oppone alla rottura delle bolle d'aria nelle",
-            "schiume",
+            "consentono di stabilizzare schiume ed emulsioni attraverso la costituzione di uno strato molecolare resistente ed elastico che si oppone alla rottura delle bolle d'aria nelle schiume",
             "consentono la formazione di gel stabili mediante la formazione di ponti disolfuro",
             "non hanno interesse nella stabilizzazione di schiume ed emulsioni"
         ],
@@ -5778,7 +5743,7 @@
         "y0_domanda": 485.3550109863281,
         "pagina": 87,
         "risposta_corretta_index": 1,
-        "risposta_corretta": "consentono di stabilizzare schiume ed emulsioni attraverso la costituzione di uno strato molecolare resistente ed elastico che si oppone alla rottura delle bolle d'aria nelle"
+        "risposta_corretta": "consentono di stabilizzare schiume ed emulsioni attraverso la costituzione di uno strato molecolare resistente ed elastico che si oppone alla rottura delle bolle d'aria nelle schiume"
     },
     {
         "numero": "06",
@@ -15958,8 +15923,7 @@
             "tutte le affermazioni proposte",
             "tipizzare il sangue",
             "identificare i contaminanti batterici",
-            "valutare la presenza di particolari anticorpi nel siero",
-            "Powered by TCPDF (www.tcpdf.org)"
+            "valutare la presenza di particolari anticorpi nel siero"
         ],
         "immagine_path": null,
         "y0_domanda": 477.2550048828125,

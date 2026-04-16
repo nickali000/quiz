@@ -8,4 +8,6 @@ Dockerfile
 .dockerignore
 .vscode
 .idea
+.venv
+tmp_uploads
 *.md

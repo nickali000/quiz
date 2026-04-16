@@ -4,11 +4,18 @@ FROM node:20-alpine
 # Imposta la directory di lavoro
 WORKDIR /app
 
+# Dipendenze di sistema per l'import PDF
+RUN apk add --no-cache python3 py3-pip
+
 # Copia package.json e package-lock.json per sfruttare la cache di Docker
 COPY package*.json ./
 
+# Dipendenze Python per l'estrazione dei PDF
+COPY requirements.txt ./
+
 # Installa le dipendenze di produzione
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev \
+  && pip3 install --no-cache-dir --break-system-packages -r requirements.txt
 
 # Copia il resto dell'applicazione
 COPY . .

@@ -1,19 +1,46 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const { execFile } = require("child_process");
+const { promisify } = require("util");
+const multer = require("multer");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 1111;
+const execFileAsync = promisify(execFile);
 
 const QUIZ_FILE = path.join(__dirname, "quiz_estratti.json");
 const PROGRESS_FILE = path.join(__dirname, "user_progress.json");
 const DEFAULT_SUBJECT_NAME = "Scienza degli alimenti";
-
 const IMAGES_DIR = path.join(__dirname, "immagini_quiz");
+const UPLOADS_DIR = path.join(__dirname, "tmp_uploads");
+const PDF_IMPORT_SCRIPT = path.join(__dirname, "scripts", "import_quiz_pdf.py");
+const PYTHON_VENV_BINARY = path.join(__dirname, ".venv", "bin", "python");
+const MAX_UPLOAD_SIZE_BYTES = 300 * 1024 * 1024;
+const FOOTER_PATTERN = /Powered by TCPDF/i;
+const CONTINUATION_WORD_PATTERN =
+  /^(?:[a-zà-ù(0-9"'`]|gruppi\b|fisiologiche\b|concorrono\b|conservazione\b|biologica\b|dell'azoto\b|primaria\b|schiume\b|temperature\b|insorgenza\b|stato\b|elementi\b|chetonico\b|favoriscono\b|tranne\b)/i;
+
+fs.mkdirSync(IMAGES_DIR, { recursive: true });
+fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 app.use(express.json());
 app.use("/immagini_quiz", express.static(IMAGES_DIR));
 app.use(express.static(path.join(__dirname, "public")));
+
+const upload = multer({
+  dest: UPLOADS_DIR,
+  limits: { fileSize: MAX_UPLOAD_SIZE_BYTES },
+  fileFilter: (_req, file, callback) => {
+    const isPdf =
+      file.mimetype === "application/pdf" || file.originalname.toLowerCase().endsWith(".pdf");
+    if (!isPdf) {
+      callback(new Error("Carica un file PDF valido."));
+      return;
+    }
+    callback(null, true);
+  }
+});
 
 function resolveCorrectAnswerIndex(rawQuestion, answers) {
   if (Number.isInteger(rawQuestion.risposta_corretta_index)) {
@@ -48,6 +75,119 @@ function resolveSubjectName(rawQuestion) {
   }
 
   return DEFAULT_SUBJECT_NAME;
+}
+
+function isQuestionUsable(question) {
+  return (
+    typeof question.testo === "string" &&
+    question.testo.trim() !== "" &&
+    Array.isArray(question.risposte) &&
+    question.risposte.length > 0
+  );
+}
+
+function joinTextParts(...parts) {
+  return parts
+    .map((part) => String(part || "").trim())
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .replace(/\s+([,.;:!?])/g, "$1")
+    .trim();
+}
+
+function sanitizeExtractedAnswers(rawAnswers) {
+  return Array.isArray(rawAnswers)
+    ? rawAnswers
+        .filter((answer) => typeof answer === "string")
+        .map((answer) => answer.trim())
+        .filter((answer) => answer !== "" && !FOOTER_PATTERN.test(answer))
+    : [];
+}
+
+function scoreAnswerMerge(left, right) {
+  let score = 0;
+
+  if (left.length >= 80) score += 3;
+  if (right.length <= 80) score += 2;
+  if (CONTINUATION_WORD_PATTERN.test(right)) score += 5;
+  if (/^[a-zà-ù]/i.test(right)) score += 2;
+  if (/[,;:]$/.test(left)) score += 2;
+  if (!/[.?!]$/.test(left)) score += 1;
+  if (/^[A-ZÀ-Ù]/.test(right)) score -= 2;
+  if (left.length < 30 && right.length > 80) score -= 1;
+
+  return score;
+}
+
+function repairExtractedAnswers(rawAnswers) {
+  const answers = sanitizeExtractedAnswers(rawAnswers);
+  let mergedLines = 0;
+
+  while (answers.length > 4) {
+    let bestMergeIndex = 0;
+    let bestScore = Number.NEGATIVE_INFINITY;
+
+    for (let index = 0; index < answers.length - 1; index += 1) {
+      const score = scoreAnswerMerge(answers[index], answers[index + 1]);
+      if (score > bestScore) {
+        bestScore = score;
+        bestMergeIndex = index;
+      }
+    }
+
+    answers.splice(
+      bestMergeIndex,
+      2,
+      joinTextParts(answers[bestMergeIndex], answers[bestMergeIndex + 1])
+    );
+    mergedLines += 1;
+  }
+
+  return { answers, mergedLines };
+}
+
+function prepareImportedQuestions(extractedQuestions, subjectName) {
+  let repairedQuestions = 0;
+  let mergedLines = 0;
+
+  const questions = extractedQuestions.map((question) => {
+    const originalAnswers = Array.isArray(question.risposte) ? question.risposte : [];
+    const { answers, mergedLines: localMergedLines } = repairExtractedAnswers(originalAnswers);
+
+    if (localMergedLines > 0 || answers.length !== originalAnswers.length) {
+      repairedQuestions += 1;
+    }
+    mergedLines += localMergedLines;
+
+    return {
+      ...question,
+      materia: subjectName,
+      testo: typeof question.testo === "string" ? question.testo.trim() : "",
+      risposte: answers,
+      immagine_path:
+        typeof question.immagine_path === "string" && question.immagine_path.trim() !== ""
+          ? question.immagine_path.trim()
+          : null
+    };
+  });
+
+  return {
+    questions,
+    stats: {
+      repairedQuestions,
+      mergedLines,
+      validQuestions: questions.filter((question) => isQuestionUsable(question)).length
+    }
+  };
+}
+
+function refreshStore() {
+  store = loadStore();
+}
+
+function resolvePythonBinary() {
+  return fs.existsSync(PYTHON_VENV_BINARY) ? PYTHON_VENV_BINARY : "python3";
 }
 
 function normalizeQuestion(rawQuestion, index) {
@@ -101,12 +241,7 @@ function loadStore() {
 
   const normalized = parsed
     .map((question, index) => normalizeQuestion(question, index))
-    .filter(
-      (question) =>
-        typeof question.testo === "string" &&
-        question.testo.trim() !== "" &&
-        question.risposte.length > 0
-    );
+    .filter((question) => isQuestionUsable(question));
 
   if (normalized.length === 0) {
     throw new Error("Nessuna domanda valida trovata nel file quiz_estratti.json.");
@@ -201,6 +336,98 @@ app.get("/api/chapters", (_req, res) => {
 
 app.get("/api/progress", (_req, res) => {
   res.json(progress);
+});
+
+app.post("/api/subjects/import", (req, res) => {
+  upload.single("pdf")(req, res, async (uploadError) => {
+    const uploadedFile = req.file;
+
+    try {
+      if (uploadError) {
+        return res.status(400).json({ error: uploadError.message || "Upload non riuscito." });
+      }
+
+      const subjectName =
+        typeof req.body?.subjectName === "string" ? req.body.subjectName.trim() : "";
+
+      if (subjectName === "") {
+        return res.status(400).json({ error: "Inserisci il titolo della materia." });
+      }
+
+      if (!uploadedFile) {
+        return res.status(400).json({ error: "Carica un PDF prima di importare." });
+      }
+
+      const subjectId = slugifySubjectName(subjectName);
+      if (store.subjectsById.has(subjectId)) {
+        return res.status(409).json({
+          error: "Esiste gia una materia con questo titolo. Scegli un nome diverso."
+        });
+      }
+
+      const { stdout, stderr } = await execFileAsync(
+        resolvePythonBinary(),
+        [
+          PDF_IMPORT_SCRIPT,
+          "--input",
+          uploadedFile.path,
+          "--subject",
+          subjectName,
+          "--images-dir",
+          IMAGES_DIR,
+          "--images-relative-dir",
+          "immagini_quiz",
+          "--image-prefix",
+          subjectId
+        ],
+        { maxBuffer: 50 * 1024 * 1024 }
+      );
+
+      if (stderr && stderr.trim() !== "") {
+        console.warn("Import PDF stderr:", stderr.trim());
+      }
+
+      const parsed = JSON.parse(stdout);
+      const extractedQuestions = Array.isArray(parsed.questions) ? parsed.questions : [];
+      const { questions: preparedQuestions, stats } = prepareImportedQuestions(
+        extractedQuestions,
+        subjectName
+      );
+
+      if (preparedQuestions.length === 0) {
+        return res.status(400).json({
+          error: "Il PDF non ha prodotto alcuna domanda importabile."
+        });
+      }
+
+      store.rawQuestions.push(...preparedQuestions);
+      persistRawQuestions();
+      refreshStore();
+
+      const createdSubject = store.subjectsById.get(subjectId);
+      return res.status(201).json({
+        message: `Materia "${subjectName}" importata correttamente.`,
+        subject: createdSubject || null,
+        stats: {
+          extractedQuestions: parsed.stats?.extracted_questions || preparedQuestions.length,
+          savedImages: parsed.stats?.saved_images || 0,
+          importedQuestions: preparedQuestions.length,
+          validQuestions: stats.validQuestions,
+          repairedQuestions: stats.repairedQuestions,
+          mergedLines: stats.mergedLines
+        }
+      });
+    } catch (error) {
+      console.error("Errore import PDF:", error);
+      return res.status(500).json({
+        error: "Import del PDF non riuscito. Controlla formato del file e dipendenze Python."
+      });
+    } finally {
+      if (uploadedFile?.path) {
+        fs.rmSync(uploadedFile.path, { force: true });
+      }
+    }
+  });
 });
 
 app.post("/api/questions", (req, res) => {
